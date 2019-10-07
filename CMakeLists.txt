@@ -43,36 +43,11 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4TPC g4TPC.cc ${sources} ${headers})
-target_link_libraries(g4TPC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
-target_compile_options(g4TPC PRIVATE -Wno-misleading-indentation)
-
-#----------------------------------------------------------------------------
-# Copy all scripts to the build directory, i.e. the directory in which we
-# build G4TPC. This is so that we can run the executable directly because it
-# relies on these scripts being in the current working directory.
-#
-set(G4TPC_SCRIPTS
-  g4TPC.out
-  g4TPC.in
-  icons.mac
-  gui.mac
-  run.png
-  init_vis.mac
-  run1.mac
-  run2.mac
-  vis.mac
-  )
-
-foreach(_script ${G4TPC_SCRIPTS})
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
-    COPYONLY
-    )
-endforeach()
+add_executable(G4TPC ./src/G4TPC.cxx ${sources} ${headers})
+target_link_libraries(G4TPC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+target_compile_options(G4TPC PRIVATE)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS g4TPC DESTINATION bin)
+install(TARGETS G4TPC DESTINATION bin)
