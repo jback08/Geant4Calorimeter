@@ -28,8 +28,12 @@ class G4MCParticleUserAction: public G4UserRunAction, public G4UserEventAction, 
 {
 public:
     /**
-     *  Default constructor
-     */
+    *  @brief  Constructor
+    *
+    *  @param  pEventContainer event information
+    *  @param  energyCut particle energy threshold
+    *  @param  keepEMShowerDaughters option to keep or discard em shower daughters
+    */
     G4MCParticleUserAction(EventContainer *pEventContainer, const double energyCut = 0.001, const bool keepEMShowerDaughters = false);
 
     /**
@@ -38,43 +42,84 @@ public:
     ~G4MCParticleUserAction();
 
     /**
-     *  Functions expected from a G4UserRunAction
-     */
-    void BeginOfRunAction(const G4Run *pG4Run);
-    void EndOfRunAction(const G4Run *pG4Run);
+    *  @brief  Start of run acction
+    *
+    *  @param  pG4Run the current run
+    */
+    void BeginOfRunAction(const G4Run *pG4Run) override;
 
     /**
-     *  Functions expected from a G4UserEventAction
-     */
-    void BeginOfEventAction(const G4Event *pG4Event);
-    void EndOfEventAction(const G4Event *pG4Event);
+    *  @brief  End of run action
+    *
+    *  @param  pG4Run the current run
+    */
+    void EndOfRunAction(const G4Run *pG4Run) override;
 
+    /**
+    *  @brief  Start of event action
+    *
+    *  @param  pG4Event the current event
+    */
+    void BeginOfEventAction(const G4Event *pG4Event) override;
+
+    /**
+    *  @brief  End of event action
+    *
+    *  @param  pG4Event the current event
+    */
+    void EndOfEventAction(const G4Event *pG4Event) override;
+
+    /**
+    *  @brief  Get the parent MC particle track id if it exists
+    *
+    *  @param  trackId of target particle
+    *
+    *  @return track id of parent particle
+    */
     int GetParent(const int trackId) const;
+
+    /**
+    *  @brief  Is the give trackId used in the current event
+    *
+    *  @param  trackId of target particle
+    *
+    *  @return is track id of target in current event
+    */
     bool KnownParticle(const int trackId) const;
 
     /**
-     *  Functions expected from a G4UserTrackingAction
-     */
-    void PreUserTrackingAction(const G4Track *pG4Track);
-    void PostUserTrackingAction(const G4Track *pG4Track);
+    *  @brief  Start tracking action
+    *
+    *  @param  pG4Track the current track
+    */
+    void PreUserTrackingAction(const G4Track *pG4Track) override;
 
     /**
-     *  Functions expected from a G4UserSteppingAction
-     */
-    void UserSteppingAction(const G4Step *pG4Step);
+    *  @brief  End tracking action
+    *
+    *  @param  pG4Track the current track
+    */
+    void PostUserTrackingAction(const G4Track *pG4Track) override;
+
+    /**
+    *  @brief  Action to apply to given step
+    *
+    *  @param  pG4Step the current step
+    */
+    void UserSteppingAction(const G4Step *pG4Step) override;
 
 private:
     typedef std::map<int, int> IntIntMap;
 
-    EventContainer  *m_pEventContainer;
-    bool             m_keepEMShowerDaughters;
-    double           m_energyCut;
-    MCParticleInfo   m_currentMCParticleInfo;
-    MCParticleList   m_mcParticleList;
-    IntIntMap        m_parentIdMap;
-    int              m_currentPdgCode;
-    int              m_currentTrackId;
-    int              m_trackIdOffset;
+    EventContainer  *m_pEventContainer;        ///< Current event information
+    bool             m_keepEMShowerDaughters;  ///< Option to keep or discard daughters of em showers
+    double           m_energyCut;              ///< Energy threshold for tracking particles
+    MCParticleInfo   m_currentMCParticleInfo;  ///< Active MC particle information
+    MCParticleList   m_mcParticleList;         ///< List of MC particles in the event
+    IntIntMap        m_parentIdMap;            ///< Map of MC particle track id to parent MCParticle id
+    int              m_currentPdgCode;         ///< PDG code of active MC particle
+    int              m_currentTrackId;         ///< Current track id of active MC particle
+    int              m_trackIdOffset;          ///< Track id offset
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 

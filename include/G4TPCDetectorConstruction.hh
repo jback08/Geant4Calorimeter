@@ -38,61 +38,70 @@
 #include <math.h>
 
 class G4VPhysicalVolume;
-class G4GlobalMagFieldMessenger;
 class G4UserLimits;
 class G4Step;
-
-/// Detector construction class to define materials and geometry.
-/// The calorimeter is a box made of a given number of layers. A layer consists
-/// of an absorber plate and of a detection gap. The layer is replicated.
-///
-/// Four parameters define the geometry of the calorimeter :
-///
-/// - the thickness of an absorber plate,
-/// - the thickness of a gap,
-/// - the number of layers,
-/// - the transverse size of the calorimeter (the input face is a square).
-///
-/// In addition a transverse uniform magnetic field is defined 
-/// via G4GlobalMagFieldMessenger class.
 
 class G4TPCDetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
+    /**
+    *  @brief  Constructor
+    */
     G4TPCDetectorConstruction();
-    virtual ~G4TPCDetectorConstruction();
-    virtual G4VPhysicalVolume *Construct();
-    virtual void ConstructSDandField();
 
+    /**
+    *  @brief  Destrucctor
+    */
+    ~G4TPCDetectorConstruction() override;
+
+    /**
+    *  @brief  Define materials and build volumes
+    *
+    *  @return the world volume
+    */
+    G4VPhysicalVolume *Construct() override;
+
+    /**
+    *  @brief  Get the LArTPC physical volume
+    *
+    *  @return physical volume
+    */
     const G4VPhysicalVolume *GetLArPV() const;
 
     /**
-     *  @brief  Get the index of the cell for the given position
-     *
-     *  @return the cell index
-     */
+    *  @brief  Get the index of the cell for the given position
+    *
+    *  @param  pG4Step the step depositing energy
+    *
+    *  @return cell index
+    */
     Cell GetCell(const G4Step *pG4Step) const;
 
 private:
+    /**
+    *  @brief  Create materials used in simulation
+    */
     void DefineMaterials();
+
+    /**
+    *  @brief  Create volumes used in simulation
+    *
+    *  @return the world volume
+    */
     G4VPhysicalVolume *DefineVolumes();
 
-    // data members
-    static G4ThreadLocal G4GlobalMagFieldMessenger *fMagFieldMessenger;
-
-    G4double             m_xCenter;              ///<
-    G4double             m_yCenter;              ///<
-    G4double             m_zCenter;              ///<
-    G4double             m_xWidth;               ///<
-    G4double             m_yWidth;               ///<
-    G4double             m_zWidth;               ///<
-    G4double             m_xLow;
-    G4double             m_yLow;
-    G4double             m_zLow;
-    G4int                m_nLayers;
-
-    G4VPhysicalVolume*   m_pG4LogicalVolumeLAr;  ///< the absorber physical volume
-    G4bool               fCheckOverlaps;         ///< option to activate checking of volumes overlaps
+    G4double             m_xCenter;              ///< X center of LArTPC
+    G4double             m_yCenter;              ///< Y center of LArTPC
+    G4double             m_zCenter;              ///< Z center of LArTPC
+    G4double             m_xWidth;               ///< X width of LArTPC
+    G4double             m_yWidth;               ///< Y width of LArTPC
+    G4double             m_zWidth;               ///< Z width of LArTPC
+    G4double             m_xLow;                 ///< Low x point in detector
+    G4double             m_yLow;                 ///< Low y point in detector
+    G4double             m_zLow;                 ///< Low z point in detector
+    G4int                m_nLayers;              ///< Number of layers in detector
+    G4VPhysicalVolume*   m_pG4LogicalVolumeLAr;  ///< The absorber physical volume
+    G4bool               m_checkOverlaps;        ///< Option to activate checking of volumes overlaps
 };
 
 //------------------------------------------------------------------------------

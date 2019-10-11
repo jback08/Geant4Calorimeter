@@ -42,11 +42,23 @@ class G4TPCDetectorConstruction;
 class G4TPCActionInitialization : public G4VUserActionInitialization
 {
 public:
+    /**
+    *  @brief  Constructor
+    *
+    *  @param  pG4TPCDetectorConstruction detector information
+    *  @param  parameters generic
+    */
     G4TPCActionInitialization(G4TPCDetectorConstruction *pG4TPCDetectorConstruction, const InputParameters &parameters);
-    virtual ~G4TPCActionInitialization();
 
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
+    /**
+    *  @brief  Destructor
+    */
+    ~G4TPCActionInitialization() override;
+
+    /**
+    *  @brief  Implement user actions
+    */
+    void Build() const override;
 
 private:
     G4TPCDetectorConstruction *m_pG4TPCDetectorConstruction; ///< Detector construction class

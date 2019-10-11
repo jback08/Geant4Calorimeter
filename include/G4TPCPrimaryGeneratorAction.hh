@@ -38,22 +38,30 @@
 class G4ParticleGun;
 class G4Event;
 
-/// The primary generator action class with particle gum.
-///
-/// It defines a single particle which hits the calorimeter
-/// perpendicular to the input face. The type of the particle
-/// can be changed via the G4 build-in commands of G4ParticleGun class
-/// (see the macros provided with this example).
-
+/**
+*  @brief  G4TPCPrimaryGeneratorAction class
+*/
 class G4TPCPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 public:
+    /**
+    *  @brief  Constructor
+    *
+    *  @param  parameters input information
+    */
     G4TPCPrimaryGeneratorAction(const InputParameters &parameters);
-    virtual ~G4TPCPrimaryGeneratorAction();
 
-    virtual void GeneratePrimaries(G4Event* event);
+    /**
+    *  @brief  Destructor
+    */
+    ~G4TPCPrimaryGeneratorAction() override;
 
-    void SetRandomFlag(G4bool value);
+    /**
+    *  @brief  Generate particles in the detector
+    *
+    *  @param  pG4Event the current event
+    */
+    void GeneratePrimaries(G4Event *pG4Event) override;
 
 private:
     G4ParticleGun   *m_pG4ParticleGun; ///< G4 particle gun

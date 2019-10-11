@@ -37,7 +37,6 @@
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4PVReplica.hh"
-#include "G4GlobalMagFieldMessenger.hh"
 #include "G4AutoDelete.hh"
 
 #include "G4GeometryManager.hh"
@@ -57,10 +56,6 @@
 
 //------------------------------------------------------------------------------
 
-G4ThreadLocal G4GlobalMagFieldMessenger* G4TPCDetectorConstruction::fMagFieldMessenger(nullptr);
-
-//------------------------------------------------------------------------------
-
 G4TPCDetectorConstruction::G4TPCDetectorConstruction() : G4VUserDetectorConstruction(),
     m_xCenter(0*mm),
     m_yCenter(0*mm),
@@ -70,7 +65,7 @@ G4TPCDetectorConstruction::G4TPCDetectorConstruction() : G4VUserDetectorConstruc
     m_zWidth(1000*mm),
     m_nLayers(1000),
     m_pG4LogicalVolumeLAr(nullptr),
-    fCheckOverlaps(true)
+    m_checkOverlaps(true)
 {
     m_xLow = m_xCenter - 0.5f * m_xWidth;
     m_yLow = m_yCenter - 0.5f * m_yWidth;
@@ -136,12 +131,12 @@ G4VPhysicalVolume* G4TPCDetectorConstruction::DefineVolumes()
     // World
     G4VSolid* worldS = new G4Box("World", m_xWidth * worldScale / 2.f, m_yWidth * worldScale / 2.f, m_zWidth * worldScale / 2.f);
     G4LogicalVolume* worldLV = new G4LogicalVolume(worldS, defaultMaterial, "World");
-    G4VPhysicalVolume* worldPV = new G4PVPlacement(0, worldCenter, worldLV, "World", 0, false, 0, fCheckOverlaps);
+    G4VPhysicalVolume* worldPV = new G4PVPlacement(0, worldCenter, worldLV, "World", 0, false, 0, m_checkOverlaps);
 
     // Calorimeter
     G4VSolid* calorimeterS = new G4Box("Calorimeter", m_xWidth/2, m_yWidth/2, m_zWidth/2);
     G4LogicalVolume* calorLV = new G4LogicalVolume(calorimeterS, defaultMaterial, "Calorimeter");
-    new G4PVPlacement(0, worldCenter, calorLV, "Calorimeter", worldLV, false, 0, fCheckOverlaps);
+    new G4PVPlacement(0, worldCenter, calorLV, "Calorimeter", worldLV, false, 0, m_checkOverlaps);
 
     // Layers
     const G4double layerThickness(m_zWidth/m_nLayers);
@@ -152,7 +147,7 @@ G4VPhysicalVolume* G4TPCDetectorConstruction::DefineVolumes()
     // Absorber
     G4VSolid* absorberS = new G4Box("Abso", m_xWidth/2, m_yWidth/2, layerThickness/2);
     G4LogicalVolume* absorberLV = new G4LogicalVolume(absorberS, pG4Material_LAr, "Abso");
-    m_pG4LogicalVolumeLAr = new G4PVPlacement(0, worldCenter, absorberLV, "Abso", layerLV, false, 0, fCheckOverlaps);
+    m_pG4LogicalVolumeLAr = new G4PVPlacement(0, worldCenter, absorberLV, "Abso", layerLV, false, 0, m_checkOverlaps);
 
     // Example of User Limits
     //
@@ -192,21 +187,6 @@ G4VPhysicalVolume* G4TPCDetectorConstruction::DefineVolumes()
 
     // Always return the physical World
     return worldPV;
-}
-
-//------------------------------------------------------------------------------
-
-void G4TPCDetectorConstruction::ConstructSDandField()
-{
-    // Create global magnetic field messenger.
-    // Uniform magnetic field is then created automatically if
-    // the field value is not zero.
-    G4ThreeVector fieldValue = G4ThreeVector();
-    fMagFieldMessenger = new G4GlobalMagFieldMessenger(fieldValue);
-    fMagFieldMessenger->SetVerboseLevel(1);
-
-    // Register the field messenger for deleting
-    G4AutoDelete::Register(fMagFieldMessenger);
 }
 
 //------------------------------------------------------------------------------

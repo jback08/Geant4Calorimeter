@@ -30,7 +30,6 @@
 
 #include "G4TPCEventAction.hh"
 #include "G4TPCRunAction.hh"
-#include "G4TPCAnalysis.hh"
 
 #include "G4RunManager.hh"
 #include "G4Event.hh"

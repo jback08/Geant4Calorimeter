@@ -47,12 +47,16 @@ public:
     void SaveXml();
 
     /**
-     *  Get the current cell list
-     */
+    *  @brief  Get the current cell list
+    *
+    *  @return the current list of cells
+    */
     CellList &GetCurrentCellList();
 
     /**
      *  Get the current MCParticle list
+     *
+     *  @return the current list of MCParticles
      */
     MCParticleList &GetCurrentMCParticleList();
 
@@ -65,10 +69,10 @@ private:
     typedef std::vector<MCParticleList> MCParticleListVector;
     typedef std::vector<CellList> CellListVector;
 
-    int                  m_eventNumber;
-    MCParticleListVector m_mcParticles;
-    CellListVector       m_cells;
-    InputParameters      m_parameters;
+    int                  m_eventNumber; ///< Event number
+    MCParticleListVector m_mcParticles; ///< MCParticle list
+    CellListVector       m_cells;       ///< Cell list
+    InputParameters      m_parameters;  ///< Input parameters
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
