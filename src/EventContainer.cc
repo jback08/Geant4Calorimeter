@@ -6,7 +6,7 @@
  *  $Log: $
  */
 
-#include "tinyxml.hh"
+#include "Xml/tinyxml.hh"
 #include "EventContainer.hh"
 
 EventContainer::EventContainer(const InputParameters &parameters) :

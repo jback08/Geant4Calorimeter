@@ -25,7 +25,7 @@ distribution.
 #include <ctype.h>
 #include <stddef.h>
 
-#include "tinyxml.hh"
+#include "Xml/tinyxml.hh"
 
 //#define DEBUG_PARSER
 #if defined( DEBUG_PARSER )
