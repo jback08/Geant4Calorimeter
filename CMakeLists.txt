@@ -37,7 +37,7 @@ find_package(ROOT REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR}/include
                     ${ROOT_INCLUDE_DIRS})
 
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
+file(GLOB_RECURSE sources RELATIVE ${PROJECT_SOURCE_DIR} "src/*.cc")
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 #----------------------------------------------------------------------------
