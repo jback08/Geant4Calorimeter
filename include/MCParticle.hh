@@ -26,17 +26,23 @@ class MCParticle
 {
 public:
     /**
-     *  Default constructor
-     */
+    *  @brief  Default constructor
+    */
     MCParticle();
 
     /**
-     *  Constructor
+     *  @brief  Constructor
+     *
+     *  @param  trackId
+     *  @param  pdg
+     *  @param  parent id
+     *  @param  mass
+     *  @param  status
      */
     MCParticle(const int trackId, const int pdg, const int parent, const double mass, const int status = 1);
 
     /**
-     *  Destructor
+     *  @brief  Destructor
      */
     ~MCParticle();
 
@@ -47,81 +53,370 @@ public:
     {
     public:
         /**
-         *  Default constructor
+         *  @brief  Default constructor
          */
         Trajectory();
 
-        /**
-         *  Constructor
-         */
+	/**
+	 *  @brief  Constructor
+	 *
+	 *  @param  vtxTLV position of particle at the start of the trajectory
+	 *  @param  momentumTLV momentum of particle at the start of the trajectory
+	 */
         Trajectory(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV);
 
+	/**
+	 *  @brief  Get the position at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return position at the point of interest
+	 */
         const TLorentzVector &GetPosition(const int i) const;
-        const TLorentzVector &GetMomentum(const int i) const;
-        double GetPositionX(const int i) const;
-        double GetPositionY(const int i) const;
-        double GetPositionZ(const int i) const;
-        double GetMomentumX(const int i) const;
-        double GetMomentumY(const int i) const;
-        double GetMomentumZ(const int i) const;
-        double GetEnergy(const int i) const;
-        int GetNumberOfTrajectoryPoints() const;
 
-        void AddTrajectoryPoint(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV);
+	/**
+	 *  @brief  Get the momentum at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return momentum at the point of interest
+	 */
+        const TLorentzVector &GetMomentum(const int i) const;
+
+	/**
+	 *  @brief  Get the x position at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return x position at the point of interest
+	 */
+        double GetPositionX(const int i) const;
+
+	/**
+	 *  @brief  Get the y position at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return y position at the point of interest
+	 */
+	double GetPositionY(const int i) const;
+
+	/**
+	 *  @brief  Get the z position at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return z position at the point of interest
+	 */
+	double GetPositionZ(const int i) const;
+
+	/**
+	 *  @brief  Get the x momentum component at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return x momentum component at the point of interest
+	 */
+	double GetMomentumX(const int i) const;
+
+	/**
+	 *  @brief  Get the y momentum component at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return y momentum component at the point of interest
+	 */
+	double GetMomentumY(const int i) const;
+
+	/**
+	 *  @brief  Get the z momentum component at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return z momentum component at the point of interest
+	 */
+	double GetMomentumZ(const int i) const;
+
+	/**
+	 *  @brief  Get the energy at a given trajectory point
+	 *
+	 *  @param  i the trajectory point of interest
+	 *
+	 *  @return energy at the point of interest
+	 */
+	double GetEnergy(const int i) const;
+
+	/**
+	 *  @brief  Get the number of trajecctory points in total
+	 *
+	 *  @return The number of trajecctory points
+	 */
+	int GetNumberOfTrajectoryPoints() const;
+
+	/**
+	 *  @brief  Add a trajectory point to the trajectory
+	 *
+	 *  @param  vtxTLV the position to add
+	 *  @param  momentumTLV the momentim to add
+	 */
+	void AddTrajectoryPoint(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV);
 
     private:
-        TrajectoryPointVector m_trajectoryPointVector;
+        TrajectoryPointVector m_trajectoryPointVector; ///< Vector of trajectory points
     };
 
+    /**
+     *  @brief  Get the MC particle status
+     *
+     *  @return MC particle status
+     */
     int GetStatus() const;
+
+    /**
+     *  @brief  Get MC particle geant track id
+     *
+     *  @return track id
+     */
     int GetTrackId() const;
+
+    /**
+     *  @brief  Get MC particle PDG code
+     *
+     *  @return PDG code
+     */
     int GetPDGCode() const;
+
+    /**
+     *  @brief  Get parent MC particle track id
+     *
+     *  @return parent track id
+     */
     int GetParent() const;
+
+    /**
+     *  @brief  Get MC particle mass
+     *
+     *  @return mass
+     */
     double GetMass() const;
 
+    /**
+     *  @brief  Add daughter MC particle
+     *
+     *  @param  trackId of daughter
+     */
     void AddDaughter(const int trackId);
-    int GetDaughter(const int trackId) const;
+
+    /**
+     *  @brief  Get geant track id for a specific daughter MC particle
+     *
+     *  @param  daughterId the ith daughter of the current MC particle
+     *
+     *  @return the track id of the ith daughter
+     */
+    int GetDaughter(const int daughterId) const;
+
+    /**
+     *  @brief  Get the number of daughter particles
+     *
+     *  @return the number of daughter particles
+     */
     int GetNumberOfDaughters() const;
 
+    /**
+     *  @brief  Get the number of trajectory points for this MC particle
+     *
+     *  @return the number of trajectory points for this MC particle
+     */
     int GetNumberOfTrajectoryPoints() const;
 
+    /**
+     *  @brief  Get the position of this MC particle at the ith trajectory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return position at the ith trajectory point
+     */
     const TLorentzVector &GetPosition(const int i = 0) const;
+
+    /**
+     *  @brief  Get the x position of this MC particle at the ith trajectory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return x position of this MC particle at the ith trajectory point
+     */
     double GetPositionX(const int i = 0) const;
+
+    /**
+     *  @brief  Get the y position of this MC particle at the ith trajectory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return y position of this MC particle at the ith trajectory point
+     */
     double GetPositionY(const int i = 0) const;
+
+    /**
+     *  @brief  Get the z position of this MC particle at the ith trajectory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return z position of this MC particle at the ith trajectory point
+     */
     double GetPositionZ(const int i = 0) const;
+
+    /**
+     *  @brief  Get the time of this MC particle at the ith trajectory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return time of this MC particle at the ith trajectory point
+     */
     double GetTime(const int i = 0) const;
 
+    /**
+     *  @brief  Get the position of this MC particle at the end of the trajectory
+     *
+     *  @return end position
+     */
     const TLorentzVector &GetEndPosition() const;
+
+    /**
+     *  @brief  Get the x position of this MC particle at the end of the trajectory
+     *
+     *  @return end x position
+     */
     double GetEndPositionX() const;
+
+    /**
+     *  @brief  Get the y position of this MC particle at the end of the trajectory
+     *
+     *  @return end y position
+     */
     double GetEndPositionY() const;
+
+    /**
+     *  @brief  Get the z position of this MC particle at the end of the trajectory
+     *
+     *  @return end z position
+     */
     double GetEndPositionZ() const;
+
+    /**
+     *  @brief  Get the time of this MC particle at the end of the trajectory
+     *
+     *  @return end time
+     */
     double GetEndTime() const;
 
+    /**
+     *  @brief  Get the momentum of this MC particle at the ith trajetory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return the momentum of this MC particle at the ith trajetory point
+     */
     const TLorentzVector &GetMomentum(const int i = 0) const;
+
+    /**
+     *  @brief  Get the x momentum component of this MC particle at the ith trajetory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return x momentum component of this MC particle at the ith trajetory point
+     */
     double GetMomentumX(const int i = 0) const;
+
+    /**
+     *  @brief  Get the y momentum component of this MC particle at the ith trajetory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return y momentum component of this MC particle at the ith trajetory point
+     */
     double GetMomentumY(const int i = 0) const;
+
+    /**
+     *  @brief  Get the z momentum component of this MC particle at the ith trajetory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return z momentum component of this MC particle at the ith trajetory point
+     */
     double GetMomentumZ(const int i = 0) const;
+
+    /**
+     *  @brief  Get the energy of this MC particle at the ith trajetory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return energy of this MC particle at the ith trajetory point
+     */
     double GetEnergy(const int i = 0) const;
+
+    /**
+     *  @brief  Get the momentum of this MC particle at the ith trajetory point
+     *
+     *  @param  i the trajetory point index
+     *
+     *  @return the momentum of this MC particle at the ith trajetory point
+     */
     double GetStepMomentum(const int i = 0) const;
 
+    /**
+     *  @brief  Get the momentum of this MC particle at the end of the trajectory
+     *
+     *  @return end momentum
+     */
     const TLorentzVector &GetEndMomentum() const;
+
+    /**
+     *  @brief  Get the x momentum component of this MC particle at the end of the trajectory
+     *
+     *  @return end x momentum
+     */
     double GetEndMomentumX() const;
+
+    /**
+     *  @brief  Get the y momentum component of this MC particle at the end of the trajectory
+     *
+     *  @return end y momentum
+     */
     double GetEndMomentumY() const;
+
+    /**
+     *  @brief  Get the z momentum component of this MC particle at the end of the trajectory
+     *
+     *  @return end z momentum
+     */
     double GetEndMomentumZ() const;
+
+    /**
+     *  @brief  Get the energy of this MC particle at the end of the trajectory
+     *
+     *  @return end energy
+     */
     double GetEndEnergy() const;
 
+    /**
+     *  @brief  Add a trajectory point to this MC particle
+     *
+     *  @param  vtxTLV position to add
+     *  @param  momentumTLV momentum to add
+     */
     void AddTrajectoryPoint(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV);
 
 private:
-    int         m_status;
-    int         m_trackId;
-    int         m_pdgCode;
-    int         m_parent;
-    std::string m_process;
-    std::string m_endProcess;
-    Trajectory  m_trajectory;
-    float       m_mass;
-    IntVector   m_daughters;
+    int         m_status;        ///< MC particle status
+    int         m_trackId;       ///< Geant track id
+    int         m_pdgCode;       ///< PDG code
+    int         m_parent;        ///< Parent track id
+    std::string m_process;       ///< Start process
+    std::string m_endProcess;    ///< End process
+    Trajectory  m_trajectory;    ///< Trajectory of particle
+    float       m_mass;          ///< Mass of particle
+    IntVector   m_daughters;     ///< Vector of daughter track ids
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -168,10 +463,10 @@ inline void MCParticle::AddDaughter(const int trackId)
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline int MCParticle::GetDaughter(const int trackId) const
+inline int MCParticle::GetDaughter(const int daughterId) const
 {
-    if (trackId < static_cast<int>(m_daughters.size()))
-        m_daughters.at(trackId);
+    if (daughterId < static_cast<int>(m_daughters.size()))
+        m_daughters.at(daughterId);
 
     return 0;
 }
@@ -473,13 +768,31 @@ public:
      */
     MCParticleList();
 
+    /**
+    *  @brief  Add MCParticle to list
+    *
+    *  @param  pMCParticle to add
+    *  @param  geantTrackId track id of particle being added
+    */
     void Add(MCParticle *pMCParticle, const int geantTrackId);
+
+    /**
+    *  @brief  Wipe all MCParticles from list
+    */
     void Clear();
+
+    /**
+    *  @brief  Is MCParticle present in list
+    *
+    *  @param  trackId of target MCParticle
+    *
+    *  @return bool is MCParticle in list
+    */
     bool KnownParticle(const int trackId) const;
 
     IntMCParticleMap m_mcParticles;          ///< Map of Id to MCParticle (includes offset for each event)
     IntMCParticleMap m_trackIdToMCParticles; ///< Map of geant4 trackId to MCParticle (no offset)
-    IntIntMap        m_parentIdMap;
+    IntIntMap        m_parentIdMap;          ///< Map of geant4 trackId to parent MCParticle trackId
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 

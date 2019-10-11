@@ -54,12 +54,6 @@ G4TPCActionInitialization::~G4TPCActionInitialization()
 
 //------------------------------------------------------------------------------
 
-void G4TPCActionInitialization::BuildForMaster() const
-{
-}
-
-//------------------------------------------------------------------------------
-
 void G4TPCActionInitialization::Build() const
 {
     // Set user defined actions

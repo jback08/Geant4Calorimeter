@@ -40,20 +40,42 @@
 #include <map>
 #include <vector>
 
-/// Event action class
-
+/**
+*  @brief  G4TPCEventAction class
+*/
 class G4TPCEventAction : public G4UserEventAction
 {
 public:
+    /**
+    *  @brief  Constructor
+    *
+    *  @param  pEventContainer event information
+    *  @param  pG4MCParticleUserAction MCParticle information
+    */
     G4TPCEventAction(EventContainer *pEventContainer, G4MCParticleUserAction *pG4MCParticleUserAction);
-    virtual ~G4TPCEventAction();
 
-    virtual void BeginOfEventAction(const G4Event* event);
-    virtual void EndOfEventAction(const G4Event* event);
+    /**
+    *  @brief  Destrucctor
+    */
+    ~G4TPCEventAction() override;
+
+    /**
+    *  @brief  Start of event action
+    *
+    *  @param  pG4Event current event
+    */
+    void BeginOfEventAction(const G4Event *pG4Event) override;
+
+    /**
+    *  @brief  End of event action
+    *
+    *  @param  pG4Event current event
+    */
+    virtual void EndOfEventAction(const G4Event *pG4Event) override;
 
 private:
-    EventContainer         *m_pEventContainer;
-    G4MCParticleUserAction *m_pG4MCParticleUserAction;
+    EventContainer         *m_pEventContainer;          ///< Event information
+    G4MCParticleUserAction *m_pG4MCParticleUserAction;  ///< MC particle information
 };
 
 #endif

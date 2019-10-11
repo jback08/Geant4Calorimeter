@@ -38,36 +38,39 @@
 
 class G4Run;
 
-/// Run action class
-///
-/// It accumulates statistic and computes dispersion of the energy deposit 
-/// and track lengths of charged particles with use of analysis tools:
-/// H1D histograms are created in BeginOfRunAction() for the following 
-/// physics quantities:
-/// - Edep in absorber
-/// - Edep in gap
-/// - Track length in absorber
-/// - Track length in gap
-/// The same values are also saved in the ntuple.
-/// The histograms and ntuple are saved in the output file in a format
-/// accoring to a selected technology in G4TPCAnalysis.hh.
-///
-/// In EndOfRunAction(), the accumulated statistic and computed 
-/// dispersion is printed.
-///
-
 class G4TPCRunAction : public G4UserRunAction
 {
 public:
+    /**
+    *  @brief  Constructor
+    *
+    *  @param  pEventContainer event information
+    *  @param  pG4MCParticleUserAction MCParticle user actions
+    */
     G4TPCRunAction(EventContainer *pEventContainer, G4MCParticleUserAction *pG4MCParticleUserAction);
-    virtual ~G4TPCRunAction();
 
-    virtual void BeginOfRunAction(const G4Run *pG4Run);
-    virtual void EndOfRunAction(const G4Run *pG4Run);
+    /**
+    *  @brief  Destructor
+    */
+    ~G4TPCRunAction() override;
+
+    /**
+    *  @brief  Start of run action
+    *
+    *  @param  pG4Run the current run
+    */
+    void BeginOfRunAction(const G4Run *pG4Run) override;
+
+    /**
+    *  @brief  End of run action
+    *
+    *  @param  pG4Run the current run
+    */
+    void EndOfRunAction(const G4Run *pG4Run) override;
 
 private:
-    EventContainer         *m_pEventContainer;
-    G4MCParticleUserAction *m_pG4MCParticleUserAction;
+    EventContainer         *m_pEventContainer;          ///< Event information
+    G4MCParticleUserAction *m_pG4MCParticleUserAction;  ///< MCParticle user actions
 };
 
 #endif

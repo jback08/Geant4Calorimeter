@@ -40,25 +40,37 @@ class G4TPCDetectorConstruction;
 class G4TPCEventAction;
 class G4VPhysicalVolume;
 
-/// Stepping action class.
-///
-/// In UserSteppingAction() there are collected the energy deposit and track
-/// lengths of charged particles in Absober and Gap layers and
-/// updated in G4TPCEventAction.
-
+/**
+*  @brief  G4TPCSteppingAction class
+*/
 class G4TPCSteppingAction : public G4UserSteppingAction
 {
 public:
+    /**
+    *  @brief  Constructor
+    *
+    *  @param  pG4TPCDetectorConstruction detector properties
+    *  @param  pEventContainer event information
+    *  @param  pG4MCParticleUserAction MCParticle user actions
+    */
     G4TPCSteppingAction(const G4TPCDetectorConstruction *pG4TPCDetectorConstruction, EventContainer *pEventContainer,
         G4MCParticleUserAction *pG4MCParticleUserAction);
 
-    virtual ~G4TPCSteppingAction();
+    /**
+    *  @brief  Destructor
+    */
+    ~G4TPCSteppingAction() override;
 
-    virtual void UserSteppingAction(const G4Step *pG4Step);
+    /**
+    *  @brief  User stepping action
+    *
+    *  @param  pG4Step the current step
+    */
+    void UserSteppingAction(const G4Step *pG4Step) override;
 
 private:
     const G4TPCDetectorConstruction *m_pG4TPCDetectorConstruction; ///< Detector construction class
-    EventContainer                  *m_pEventContainer;            ///< Event action class
+    EventContainer                  *m_pEventContainer;            ///< Event information
     G4MCParticleUserAction          *m_pG4MCParticleUserAction;    ///< MCParticle user action class
 };
 

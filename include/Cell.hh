@@ -19,21 +19,60 @@ class Cell
 {
 public:
     /**
-     *  Default constructor
+     *  @brief  Constructor for cell class
+     *
+     *  @param  x position of energy deposit
+     *  @param  y position of energy deposit
+     *  @param  z position of energy deposit
+     *  @param  idx cell index
      */
     Cell(const float x, const float y, const float z, const int idx);
 
     /**
-     *  Destructor
+     *  @brief  Destructor
      */
     ~Cell();
 
+    /**
+    *  @brief  Get the cell index
+    *
+    *  @return cell index
+    */
     int GetIdx() const;
+
+    /**
+    *  @brief  Get the cell x position
+    *
+    *  @return x position of cell
+    */
     float GetX() const;
+
+    /**
+    *  @brief  Get the cell y position
+    *
+    *  @return y position of cell
+    */
     float GetY() const;
+
+    /**
+    *  @brief  Get the cell z position
+    *
+    *  @return z position of cell
+    */
     float GetZ() const;
+
+    /**
+    *  @brief  Return energy in cell
+    *
+    *  @return energy in cell
+    */
     float GetEnergy() const;
 
+    /**
+     *  @brief  Add energy deposit to cell
+     *
+     *  @param  energy to add
+     */
     void AddEnergy(const float energy);
 
 private:
@@ -111,12 +150,15 @@ public:
     ~CellList();
 
     /**
-     *  Add energy deposition from given geant track
+     *  @brief  Add the energy deposit in a given cell with a givne geant track ID to the cell list
+     *
+     *  @param  pCell cell energy to add
+     *  @param  geantTrackId track ID creating the energy deposit
      */
     void AddEnergyDeposition(Cell *pCell, const int geantTrackId);
 
-    IntCellMap     m_idCellMap;
-    MCComponents   m_mcComponents;
+    IntCellMap     m_idCellMap;     ///< Cell Id to cell map
+    MCComponents   m_mcComponents;  ///< Cell Id to vector of geantIds to energies pairs
 };
 
 #endif // #ifndef CELL_H

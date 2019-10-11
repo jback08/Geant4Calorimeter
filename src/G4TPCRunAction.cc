@@ -31,7 +31,6 @@
 #include <sstream>
 
 #include "G4TPCRunAction.hh"
-#include "G4TPCAnalysis.hh"
 
 #include "G4Run.hh"
 #include "G4RunManager.hh"
@@ -52,7 +51,6 @@ G4TPCRunAction::G4TPCRunAction(EventContainer *pEventContainer, G4MCParticleUser
 
 G4TPCRunAction::~G4TPCRunAction()
 {
-    delete G4AnalysisManager::Instance();
 }
 
 //------------------------------------------------------------------------------

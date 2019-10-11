@@ -28,17 +28,19 @@ public:
     ~InputParameters();
 
     /**
-     *  Check whether parameters are valid
-     */
+    *  @brief  Check if input parameters are valid
+    *
+    *  @return bool are parameters valid
+    */
     bool Valid();
 
-    std::string          m_species;
-    std::string          m_outputFileName;
-    double               m_energy;
-    int                  m_nEvents;
-    int                  m_nParticlesPerEvent;
-    bool                 m_keepEMShowerDaughters;
-    double               m_energyCut;
+    std::string          m_species;               ///< Particle type to simulate if using particle gun
+    std::string          m_outputFileName;        ///< Output file (xml) to write to
+    double               m_energy;                ///< Energy (total) of particles to simulate
+    int                  m_nEvents;               ///< Number of events to simulate
+    int                  m_nParticlesPerEvent;    ///< Number of particles per event
+    bool                 m_keepEMShowerDaughters; ///< Should keep/discard em shower daughter mc particles
+    double               m_energyCut;             ///< Energy threshold for tracking
 };
 
 #endif // #ifndef INPUT_PARAMETERS_H
