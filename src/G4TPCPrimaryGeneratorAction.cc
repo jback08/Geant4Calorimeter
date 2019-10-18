@@ -51,14 +51,7 @@ G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(const InputParameters &
     m_pG4ParticleGun(0),
     m_parameters(parameters)
 {
-    G4int numberOfParticleInstances = 1;
-    m_pG4ParticleGun = new G4ParticleGun(numberOfParticleInstances);
-
-    // default particle kinematic
-    G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle(m_parameters.m_species.c_str());
-    m_pG4ParticleGun->SetParticleDefinition(particleDefinition);
-    m_pG4ParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-    m_pG4ParticleGun->SetParticleEnergy(m_parameters.m_energy*GeV);
+    m_pG4ParticleGun = new G4ParticleGun();
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +93,7 @@ void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     CLHEP::HepRandom::setTheSeed(seed);
 
     // Set gun position
-    for (int particle = 0; particle < m_parameters.m_nParticlesPerEvent; particle++)
+    for (int particle = 0; particle < m_parameters.GetParticleGunNParticlesPerEvent(); particle++)
     {
         G4ThreeVector startPoint(tpcBox->GetPointOnSurface());
         G4ThreeVector endPoint(tpcBox->GetPointOnSurface());
@@ -114,11 +107,11 @@ void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
         G4ThreeVector direction(endPoint - startPoint);
 
-        G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle(m_parameters.m_species.c_str());
+        G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle(m_parameters.GetParticleGunSpecies().c_str());
         m_pG4ParticleGun->SetParticleDefinition(particleDefinition);
         m_pG4ParticleGun->SetParticlePosition(startPoint);
         m_pG4ParticleGun->SetParticleMomentumDirection(direction);
-        m_pG4ParticleGun->SetParticleEnergy(m_parameters.m_energy*GeV);
+        m_pG4ParticleGun->SetParticleEnergy(m_parameters.GetParticleGunEnergy()*GeV);
         m_pG4ParticleGun->GeneratePrimaryVertex(anEvent);
     }
 }

@@ -123,7 +123,7 @@ void EventContainer::SaveXml()
         }
     }
 
-    tiXmlDocument.SaveFile(m_parameters.m_outputFileName.c_str());
+    tiXmlDocument.SaveFile(m_parameters.GetOutputXmlFileName());
     tiXmlDocument.Clear();
 }
 

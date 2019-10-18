@@ -31,10 +31,9 @@ public:
     *  @brief  Constructor
     *
     *  @param  pEventContainer event information
-    *  @param  energyCut particle energy threshold
-    *  @param  keepEMShowerDaughters option to keep or discard em shower daughters
+    *  @param  inputParameters input parameters
     */
-    G4MCParticleUserAction(EventContainer *pEventContainer, const double energyCut = 0.001, const bool keepEMShowerDaughters = false);
+    G4MCParticleUserAction(EventContainer *pEventContainer, const InputParameters &inputParameters);
 
     /**
      *  Destructor

@@ -58,9 +58,7 @@ void G4TPCActionInitialization::Build() const
 {
     // Set user defined actions
     EventContainer *pEventContainer = new EventContainer(m_parameters);
-    G4MCParticleUserAction *pG4MCParticleUserAction = new G4MCParticleUserAction(pEventContainer, m_parameters.m_energyCut,
-        m_parameters.m_keepEMShowerDaughters);
-
+    G4MCParticleUserAction *pG4MCParticleUserAction = new G4MCParticleUserAction(pEventContainer, m_parameters);
     SetUserAction(new G4TPCPrimaryGeneratorAction(m_parameters));
     SetUserAction(new G4TPCRunAction(pEventContainer, pG4MCParticleUserAction));
     SetUserAction(new G4TPCEventAction(pEventContainer, pG4MCParticleUserAction));
