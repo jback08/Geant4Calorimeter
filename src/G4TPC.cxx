@@ -51,8 +51,8 @@ namespace
 
 void PrintUsage()
 {
-    G4cerr << " Usage: " << G4endl;
-    G4cerr << " g4TPC [-n nEvents ] [-s species] [-e energy] [-o outputFileName] [-d keepEMShowerDaughters true/false]" << G4endl;
+    std::cout << " Usage: " << G4endl;
+    std::cout << " G4TPC ConfigFile.xml" << G4endl;
 }
 
 }
@@ -62,47 +62,13 @@ void PrintUsage()
 int main(int argc,char** argv)
 {
     // Evaluate arguments
-    if ( argc > 11 )
+    if ( argc != 2 )
     {
         PrintUsage();
         return 1;
     }
 
-    InputParameters parameters;
-
-    for (G4int i=1; i < argc; i = i+2)
-    {
-        if (G4String(argv[i]) == "-n")
-        {
-            parameters.m_nEvents = G4UIcommand::ConvertToInt(argv[i+1]);
-        }
-        else if (G4String(argv[i]) == "-s")
-        {
-            parameters.m_species = argv[i+1];
-        }
-        else if (G4String(argv[i])  == "-e")
-        {
-            parameters.m_energy = G4UIcommand::ConvertToDouble(argv[i+1]);
-        }
-        else if (G4String(argv[i])  == "-o")
-        {
-            parameters.m_outputFileName = argv[i+1];
-        }
-        else if (G4String(argv[i])  == "-d")
-        {
-            std::string emDaughterOption(argv[i+1]);
-            std::transform(emDaughterOption.begin(), emDaughterOption.end(), emDaughterOption.begin(), ::tolower);
-
-            if (emDaughterOption == "true")
-            {
-                parameters.m_keepEMShowerDaughters = true;
-            }
-            else
-            {
-                parameters.m_keepEMShowerDaughters = false;
-            }
-        }
-    }
+    InputParameters parameters(argv[1]);
 
     if (!parameters.Valid())
     {
@@ -134,7 +100,7 @@ int main(int argc,char** argv)
     // Get the pointer to the User Interface manager
     G4UImanager* pG4UImanager = G4UImanager::GetUIpointer();
     pG4UImanager->ApplyCommand("/run/initialize");
-    pG4UImanager->ApplyCommand("/run/beamOn " + std::to_string(parameters.m_nEvents));
+    pG4UImanager->ApplyCommand("/run/beamOn " + std::to_string(parameters.GetParticleGunNEvents()));
 
     // Job termination
     // Free the store: user actions, physics_list and detector_description are

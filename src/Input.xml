@@ -1,0 +1,12 @@
+<G4TPC>
+    <ParticleGun>
+        <Use>true</Use>
+        <Energy>1</Energy>
+        <Species>mu-</Species>
+        <NEvents>2</NEvents>
+        <ParticlePerEvent>1</ParticlePerEvent>
+    </ParticleGun>
+    <Output3DXmlFileName>Boris.xml</Output3DXmlFileName>
+    <KeepMCEmShowerDaughters>true</KeepMCEmShowerDaughters>
+    <HitThresholdEnergy>0</HitThresholdEnergy>
+</G4TPC>
