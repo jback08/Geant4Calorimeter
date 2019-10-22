@@ -97,6 +97,55 @@ public:
      */
     double GetHitEnergyThreshold() const;
 
+    /**
+     *  @brief  Get the x center of the detector
+     *
+     *  @return m_xCenter
+     */
+    double GetCenterX() const;
+
+    /**
+     *  @brief  Get the y center of the detector
+     *
+     *  @return m_yCenter
+     */
+    double GetCenterY() const;
+
+    /**
+     *  @brief  Get the z center of the detector
+     *
+     *  @return m_zCenter
+     */
+    double GetCenterZ() const;
+
+    /**
+     *  @brief  Get the x width of the detector
+     *
+     *  @return m_xWidth
+     */
+    double GetWidthX() const;
+
+    /**
+     *  @brief  Get the y width of the detector
+     *
+     *  @return m_yWidth
+     */
+    double GetWidthY() const;
+
+    /**
+     *  @brief  Get the z width of the detector
+     *
+     *  @return m_zWidth
+     */
+    double GetWidthZ() const;
+
+    /**
+     *  @brief  Get the number of layers for 3D binning
+     *
+     *  @return m_nLayers
+     */
+    int GetNLayers() const;
+
 private:
     /**
      *  @brief  Load input parameters via xml
@@ -113,6 +162,13 @@ private:
     int                  m_nParticlesPerEvent;    ///< Number of particles per event
     bool                 m_keepEMShowerDaughters; ///< Should keep/discard em shower daughter mc particles
     double               m_energyCut;             ///< Energy threshold for tracking
+    double               m_xCenter;               ///< X center of detector (mm)
+    double               m_yCenter;               ///< Y center of detector (mm)
+    double               m_zCenter;               ///< Z center of detector (mm)
+    double               m_xWidth;                ///< Detector width along x (mm)
+    double               m_yWidth;                ///< Detector width along y (mm)
+    double               m_zWidth;                ///< Detector width along z (mm)
+    int                  m_nLayers;               ///< Number of layers for defining 3D hit binning
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -169,6 +225,55 @@ inline bool InputParameters::GetKeepEMShowerDaughters() const
 inline double InputParameters::GetHitEnergyThreshold() const
 {
     return m_energyCut;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetCenterX() const
+{
+    return m_xCenter;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetCenterY() const
+{
+    return m_yCenter;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetCenterZ() const
+{
+    return m_zCenter;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWidthX() const
+{
+    return m_xWidth;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWidthY() const
+{
+    return m_yWidth;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWidthZ() const
+{
+    return m_zWidth;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline int InputParameters::GetNLayers() const
+{
+    return m_nLayers;
 }
 
 #endif // #ifndef INPUT_PARAMETERS_H

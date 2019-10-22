@@ -40,14 +40,17 @@
 class G4VPhysicalVolume;
 class G4UserLimits;
 class G4Step;
+class InputParameters;
 
 class G4TPCDetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
     /**
     *  @brief  Constructor
+    *
+    *  @param  inputParameters configurable parameters
     */
-    G4TPCDetectorConstruction();
+    G4TPCDetectorConstruction(const InputParameters &inputParameters);
 
     /**
     *  @brief  Destrucctor

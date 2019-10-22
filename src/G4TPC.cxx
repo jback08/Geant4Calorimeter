@@ -83,7 +83,7 @@ int main(int argc,char** argv)
     G4RunManager *pG4RunManager = new G4RunManager;
 
     // Set mandatory and optional initialization classes
-    G4TPCDetectorConstruction *pG4TPCDetectorConstruction = new G4TPCDetectorConstruction();
+    G4TPCDetectorConstruction *pG4TPCDetectorConstruction = new G4TPCDetectorConstruction(parameters);
     pG4RunManager->SetUserInitialization(pG4TPCDetectorConstruction);
 
     G4VModularPhysicsList *pG4VModularPhysicsList = new QGSP_BERT;
