@@ -5,6 +5,7 @@
  *
  *  $Log: $
  */
+#include "G4SystemOfUnits.hh"
 
 #include "Xml/tinyxml.hh"
 #include "InputParameters.hh"
@@ -17,7 +18,14 @@ InputParameters::InputParameters() :
     m_nEvents(1),
     m_nParticlesPerEvent(1),
     m_keepEMShowerDaughters(false),
-    m_energyCut(0.001)
+    m_energyCut(0.001),
+    m_xCenter(0*mm),
+    m_yCenter(0*mm),
+    m_zCenter(0*mm),
+    m_xWidth(1000*mm),
+    m_yWidth(1000*mm),
+    m_zWidth(1000*mm),
+    m_nLayers(1000)
 {
 }
 
@@ -142,6 +150,34 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
                     m_nParticlesPerEvent = std::stoi(pParticleGunTiXmlElement->GetText());
                 }
             }
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "CenterX")
+        {
+            m_xCenter = std::stod(pHeadTiXmlElement->GetText());
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "CenterY")
+        {
+            m_yCenter = std::stod(pHeadTiXmlElement->GetText());
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "CenterZ")
+        {
+            m_zCenter = std::stod(pHeadTiXmlElement->GetText());
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "WidthX")
+        {
+            m_xWidth = std::stod(pHeadTiXmlElement->GetText());
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "WidthY")
+        {
+            m_yWidth = std::stod(pHeadTiXmlElement->GetText());
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "WidthZ")
+        {
+            m_zWidth = std::stod(pHeadTiXmlElement->GetText());
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "NLayers")
+        {
+            m_nLayers = std::stoi(pHeadTiXmlElement->GetText());
         }
     }
     return;

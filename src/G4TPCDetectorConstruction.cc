@@ -54,19 +54,24 @@
 
 #include "G4Step.hh"
 
+#include "InputParameters.hh"
+
 //------------------------------------------------------------------------------
 
-G4TPCDetectorConstruction::G4TPCDetectorConstruction() : G4VUserDetectorConstruction(),
-    m_xCenter(0*mm),
-    m_yCenter(0*mm),
-    m_zCenter(0*mm),
-    m_xWidth(1000*mm),
-    m_yWidth(1000*mm),
-    m_zWidth(1000*mm),
-    m_nLayers(1000),
+G4TPCDetectorConstruction::G4TPCDetectorConstruction(const InputParameters &parameters) : G4VUserDetectorConstruction(),
     m_pG4LogicalVolumeLAr(nullptr),
     m_checkOverlaps(true)
 {
+    m_xCenter = parameters.GetCenterX() * mm;
+    m_yCenter = parameters.GetCenterY() * mm;
+    m_zCenter = parameters.GetCenterZ() * mm;
+
+    m_xWidth = parameters.GetWidthX() * mm;
+    m_yWidth = parameters.GetWidthY() * mm;
+    m_zWidth = parameters.GetWidthZ() * mm;
+
+    m_nLayers = parameters.GetNLayers();
+
     m_xLow = m_xCenter - 0.5f * m_xWidth;
     m_yLow = m_yCenter - 0.5f * m_yWidth;
     m_zLow = m_zCenter - 0.5f * m_zWidth;
