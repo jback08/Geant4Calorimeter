@@ -12,13 +12,12 @@
 
 InputParameters::InputParameters() :
     m_useParticleGun(false),
-    m_species(""),
-    m_outputFileName(""),
     m_energy(-1.),
     m_nEvents(1),
     m_nParticlesPerEvent(1),
+    m_useGenieInput(false),
     m_keepEMShowerDaughters(false),
-    m_energyCut(0.001),
+    m_energyCut(0.001f),
     m_xCenter(0*mm),
     m_yCenter(0*mm),
     m_zCenter(0*mm),
@@ -46,16 +45,40 @@ InputParameters::~InputParameters()
 
 bool InputParameters::Valid() const
 {
-    if (m_energy < 0.)
+    if ((m_useParticleGun && m_useGenieInput) || (!m_useParticleGun && !m_useGenieInput))
     {
-        std::cout << "Energy not specified" << std::endl;
+        std::cout << "Must use the particle gun or genie input" << std::endl;
         return false;
     }
 
-    if (m_species.empty())
+    if (m_useParticleGun)
     {
-        std::cout << "Particles species not specified" << std::endl;
-        return false;
+        if (m_energy < 0.)
+        {
+            std::cout << "Energy not specified" << std::endl;
+            return false;
+        }
+
+        if (m_species.empty())
+        {
+            std::cout << "Particle species not specified" << std::endl;
+            return false;
+        }
+
+        if (m_nEvents <= 0 || m_nParticlesPerEvent <= 0)
+        {
+            std::cout << "Must specify positive number of events and particles per event to simulate" << std::endl;
+            return false;
+        }
+    }
+
+    if (m_useGenieInput)
+    {
+        if (m_genieTrackerFile.empty())
+        {
+            std::cout << "Genie tracker file not specified" << std::endl;
+            return false;
+        }
     }
 
     if (m_outputFileName.empty())
@@ -67,6 +90,18 @@ bool InputParameters::Valid() const
     if (m_energyCut < 0.)
     {
         std::cout << "Invalid energy cut specified" << std::endl;
+        return false;
+    }
+
+    if (m_xWidth < 0.f || m_yWidth < 0.f || m_zWidth < 0.f)
+    {
+        std::cout << "Detector must not have negative width" << std::endl;
+        return false;
+    }
+
+    if (m_nLayers <= 0)
+    {
+        std::cout << "3D energy binning requires positive number of layers" << std::endl;
         return false;
     }
 
@@ -148,6 +183,29 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
                 else if (pParticleGunTiXmlElement->ValueStr() == "ParticlePerEvent")
                 {
                     m_nParticlesPerEvent = std::stoi(pParticleGunTiXmlElement->GetText());
+                }
+            }
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "GenieInput")
+        {
+            for (TiXmlElement *pGenieTiXmlElement = pHeadTiXmlElement->FirstChildElement(); pGenieTiXmlElement != nullptr; pGenieTiXmlElement = pGenieTiXmlElement->NextSiblingElement())
+            {
+                if (pGenieTiXmlElement->ValueStr() == "Use")
+                {
+                    std::string useGenieString(pGenieTiXmlElement->GetText());
+                    std::transform(useGenieString.begin(), useGenieString.end(), useGenieString.begin(), [](unsigned char c){ return std::tolower(c);});
+                    if ((useGenieString == "0") || (useGenieString == "false"))
+                    {
+                        m_useGenieInput = false;
+                    }
+                    else
+                    {
+                        m_useGenieInput = true;
+                    }
+                }
+                else if (pGenieTiXmlElement->ValueStr() == "TrackerFile")
+                {
+                    m_genieTrackerFile = pGenieTiXmlElement->GetText();
                 }
             }
         }

@@ -98,6 +98,20 @@ public:
     double GetHitEnergyThreshold() const;
 
     /**
+     *  @brief  Whether to use genie input
+     *
+     *  @return m_useGenieInput
+     */
+    bool GetUseGenieInput() const;
+
+    /**
+     *  @brief  Get genie tracker file
+     *
+     *  @return m_genieTrackerFile
+     */
+    std::string GetGenieTrackerFile() const;
+
+    /**
      *  @brief  Get the x center of the detector
      *
      *  @return m_xCenter
@@ -154,14 +168,23 @@ private:
      */
     void LoadViaXml(const std::string &inputXmlFileName);
 
+    // Particle gun setup
     bool                 m_useParticleGun;        ///< Should generate events using G4 particle gun
     std::string          m_species;               ///< Particle type to simulate if using particle gun
-    std::string          m_outputFileName;        ///< Output file (xml) to write to
     double               m_energy;                ///< Energy (total) of particles to simulate
     int                  m_nEvents;               ///< Number of events to simulate
     int                  m_nParticlesPerEvent;    ///< Number of particles per event
+
+    // Genie input
+    bool                 m_useGenieInput;         ///< Should use genie input
+    std::string          m_genieTrackerFile;      ///< Genie tracker file
+
+    // Geant4 parameters
+    std::string          m_outputFileName;        ///< Output file (xml) to write to
     bool                 m_keepEMShowerDaughters; ///< Should keep/discard em shower daughter mc particles
     double               m_energyCut;             ///< Energy threshold for tracking
+
+    // Detector properties
     double               m_xCenter;               ///< X center of detector (mm)
     double               m_yCenter;               ///< Y center of detector (mm)
     double               m_zCenter;               ///< Z center of detector (mm)
@@ -225,6 +248,20 @@ inline bool InputParameters::GetKeepEMShowerDaughters() const
 inline double InputParameters::GetHitEnergyThreshold() const
 {
     return m_energyCut;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline bool InputParameters::GetUseGenieInput() const
+{
+    return m_useGenieInput;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline std::string InputParameters::GetGenieTrackerFile() const
+{
+    return m_genieTrackerFile;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
