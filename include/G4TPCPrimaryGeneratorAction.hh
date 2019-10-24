@@ -35,8 +35,10 @@
 #include "globals.hh"
 #include "InputParameters.hh"
 
+class G4TPCPrimaryGeneratorMessenger;
 class G4ParticleGun;
 class G4Event;
+class ParseGENIETrackerFile;
 
 /**
 *  @brief  G4TPCPrimaryGeneratorAction class
@@ -63,9 +65,19 @@ public:
     */
     void GeneratePrimaries(G4Event *pG4Event) override;
 
+    // Tracker file options used by the messenger class
+    void UseTrackerFile(bool val){fUseTrackerFile = val;};
+    void SetTrackerFile(G4String name); //{fTrackerFile = name;};
+
 private:
+    G4TPCPrimaryGeneratorMessenger *fMessenger;
+
     G4ParticleGun   *m_pG4ParticleGun; ///< G4 particle gun
     InputParameters  m_parameters;     ///< Input parameters
+
+    ParseGENIETrackerFile *fParser;
+    bool fUseTrackerFile;
+    G4String fTrackerFile;
 };
 
 #endif
