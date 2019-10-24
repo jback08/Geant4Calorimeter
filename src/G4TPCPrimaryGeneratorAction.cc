@@ -42,6 +42,7 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
+
 #include "Randomize.hh"
 
 //------------------------------------------------------------------------------
@@ -54,8 +55,8 @@ G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(const InputParameters &
 {
     m_pG4ParticleGun = new G4ParticleGun();
 
-//    if (m_parameters->GetUseGenieInput())
-//        this->LoadGenieEvents();
+    if (m_parameters.GetUseGenieInput())
+        this->LoadGenieEvents();
 }
 
 //------------------------------------------------------------------------------
@@ -147,22 +148,127 @@ $ end
 }
 
 //------------------------------------------------------------------------------
-/*
+
 void G4TPCPrimaryGeneratorAction::LoadGenieEvents()
 {
-    std::ifstream inputFile(m_parameters->GetGenieTrackerFile());
+    std::ifstream inputFile(m_parameters.GetGenieTrackerFile());
 
     if (!inputFile.is_open())
     {
-        std::cout << "Unable to load genie event from the following file : " << m_parameters->GetGenieTrackerFile() << std::endl;
+        std::cout << "Unable to load genie event from the following file : " << m_parameters.GetGenieTrackerFile() << std::endl;
     }
 
     std::string line;
     std::vector<std::string> tokens;
+    unsigned int eventStatus(0);
+
+    GenieEvent genieEvent;
 
     while(std::getline(inputFile, line))
     {
         tokens = TokeniseLine(line, " $");
+
+        if(eventStatus == 0 && tokens[0] == "begin")
+        {
+            genieEvent = GenieEvent();
+            eventStatus = 1;
+        }
+        else if(eventStatus == 1 && tokens[0] == "nuance")
+        {
+            genieEvent.SetNuanceCode(std::atoi(tokens[1].c_str()));
+            eventStatus = 2;
+        }
+        else if(eventStatus == 2 && tokens[0] == "vertex")
+        {
+            genieEvent.SetVertex(std::stod(tokens[1].c_str()), std::stod(tokens[2].c_str()), std::stod(tokens[3].c_str()));
+            //currentEvent.fTime = helpers::atof(tokens[4]);
+            eventStatus = 3;
+        }
+        else if(eventStatus == 3 && tokens[0] == "track")
+        {
+            const GenieEvent::Track neutrinoTrack = ParseTrackLine(tokens);
+            genieEvent.SetNeutrinoTrack(neutrinoTrack);
+            eventStatus = 4;
+        }
+        else if(eventStatus == 4 && tokens[0] == "track")
+        {
+            // If the final token is not equal to zero then we don't want to consider this particle
+            if(tokens[6] == "0")
+            {
+                genieEvent.AddDaughterTrack(ParseTrackLine(tokens));
+            }
+        }
+        else if(eventStatus == 4 && tokens[0] == "end")
+        {
+            // We have reached the end of this event, so save the event and move on
+            m_genieEvents.push_back(genieEvent);
+            eventStatus = 0;
+        }
+        else if(eventStatus == 4 && tokens[0] == "stop")
+        {
+            std::cout << "Finished reading input file " << m_parameters.GetGenieTrackerFile()  << std::endl;
+        }
+        else
+        {
+            std::cout << "Something has gone wrong in the file. Event status = " << eventStatus << " but line token = " << tokens[0] << std::endl;
+        }
     }
 }
-*/
+
+//------------------------------------------------------------------------------
+
+GenieEvent::Track G4TPCPrimaryGeneratorAction::ParseTrackLine(const std::vector<std::string> &tokens) const
+{
+    int pdg(std::atoi(tokens[1].c_str()));
+
+    // ATTN: Nuance-style pdg code for argon, PDG standard: 100ZZZAAAI:, ZZZ = 018, AAA = 040, hence argon = 1000180400
+    if (pdg == 18040)
+        pdg = 1000180400;
+
+    const double energy(std::stod(tokens[2].c_str()));
+    const double directionX(std::stod(tokens[3].c_str()));
+    const double directionY(std::stod(tokens[4].c_str()));
+    const double directionZ(std::stod(tokens[5].c_str()));
+
+    return GenieEvent::Track(pdg, energy, directionX, directionY, directionZ);
+}
+
+//------------------------------------------------------------------------------
+
+StringVector G4TPCPrimaryGeneratorAction::TokeniseLine(const std::string &line, const std::string &sep)
+{
+    std::size_t startToken = 0, endToken = 0;
+    StringVector tokens;
+
+    if(sep.size() == 0 || line.size() == 0)
+        return tokens;
+
+    while(startToken < line.size())
+    {
+        // Find the first character that isn't a separator
+        startToken = line.find_first_not_of(sep,startToken);
+
+        if(startToken == line.npos)
+        {
+            endToken = line.size();
+        }
+        else
+        {
+            //Find end of token
+            endToken = line.find_first_of(sep, startToken);
+
+            if (endToken == line.npos)
+            {
+                // If there was no end of token, assign it to the end of string
+                endToken = line.size();
+            }
+
+            // Add this token to our vector
+            tokens.push_back(line.substr(startToken,endToken-startToken));
+
+            // We want to start looking from the end of this substring next iteration
+            startToken = endToken;
+        }
+    }
+    return tokens;
+}

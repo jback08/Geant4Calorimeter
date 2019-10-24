@@ -33,10 +33,14 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "globals.hh"
-#include "InputParameters.hh"
 
-class G4ParticleGun;
+#include "InputParameters.hh"
+#include "GenieEvent.hh"
+
 class G4Event;
+class G4ParticleGun;
+
+typedef std::vector<std::string> StringVector;
 
 /**
 *  @brief  G4TPCPrimaryGeneratorAction class
@@ -64,9 +68,36 @@ public:
     void GeneratePrimaries(G4Event *pG4Event) override;
 
 private:
+    /**
+     *  @brief  Load events from genie tracker file
+     */
+    void LoadGenieEvents();
+
+    /**
+     *  @brief  Convert genie track line into track object
+     *
+     *  @param  tokens line to convert
+     *
+     *  @return output track
+     */
+    GenieEvent::Track ParseTrackLine(const std::vector<std::string> &tokens) const;
+
+    /**
+     *  @brief  Divide string into series based on deliminator location
+     *
+     *  @param  line input
+     *  @param  sep deliminator
+     *
+     *  @return tokenized string
+     */
+    static StringVector TokeniseLine(const std::string &line, const std::string &sep);
+
+    typedef std::vector<GenieEvent> GenieEvents;
+
     G4ParticleGun   *m_pG4ParticleGun; ///< G4 particle gun
     InputParameters  m_parameters;     ///< Input parameters
     int              m_eventCouter;    ///< Event couter
+    GenieEvents      m_genieEvents;    ///< Genie events
 };
 
 #endif
