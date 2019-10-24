@@ -32,9 +32,6 @@
 #include <random>
 
 #include "G4TPCPrimaryGeneratorAction.hh"
-#include "G4TPCPrimaryGeneratorMessenger.hh"
-
-#include "ParseGENIETrackerFile.hh"
 
 #include "G4RunManager.hh"
 #include "G4LogicalVolumeStore.hh"
@@ -51,37 +48,29 @@
 
 G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(const InputParameters &parameters) :
     G4VUserPrimaryGeneratorAction(),
-    m_pG4ParticleGun(0),
-    m_parameters(parameters)
+    m_pG4ParticleGun(nullptr),
+    m_parameters(parameters),
+    m_eventCouter(0)
 {
     m_pG4ParticleGun = new G4ParticleGun();
+
+//    if (m_parameters->GetUseGenieInput())
+//        this->LoadGenieEvents();
 }
 
 //------------------------------------------------------------------------------
 
 G4TPCPrimaryGeneratorAction::~G4TPCPrimaryGeneratorAction()
 {
-    if(fParser != nullptr) delete fParser;
-    if(m_pG4ParticleGun != nullptr) delete m_pG4ParticleGun;
-    if(fMessenger != nullptr) delete fMessenger;
-}
-
-void G4TPCPrimaryGeneratorAction::SetTrackerFile(G4String name){
-  fTrackerFile = name;
-  fParser->ReadFile(fTrackerFile);
+    if (m_pG4ParticleGun != nullptr)
+        delete m_pG4ParticleGun;
 }
 
 //------------------------------------------------------------------------------
 
-void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event *pG4Event)
 {
-    std::cout << "Using tracker file? " << fUseTrackerFile << " " << fTrackerFile << std::endl;
-
-    // This function is called at the begining of event
-
-    // In order to avoid dependence of PrimaryGeneratorAction
-    // on DetectorConstruction class we get world volume
-    // from G4LogicalVolumeStore
+    m_eventCouter++;
 
     G4LogicalVolume *worlLV = G4LogicalVolumeStore::GetInstance()->GetVolume("World");
     G4LogicalVolume *tpcLV = G4LogicalVolumeStore::GetInstance()->GetVolume("Calorimeter");
@@ -104,32 +93,76 @@ void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     CLHEP::HepRandom::setTheSeed(seed);
 
-    if(!fUseTrackerFile){
-        // Set gun position
-        for (int particle = 0; particle < m_parameters.m_nParticlesPerEvent; particle++)
+    if (m_parameters.GetUseParticleGun())
+    {
+        for (int particle = 0; particle < m_parameters.GetParticleGunNParticlesPerEvent(); particle++)
         {
             G4ThreeVector startPoint(tpcBox->GetPointOnSurface());
             G4ThreeVector endPoint(tpcBox->GetPointOnSurface());
-    
+
             while (std::fabs(startPoint.x() - endPoint.x()) < std::numeric_limits<double>::epsilon() ||
                    std::fabs(startPoint.y() - endPoint.y()) < std::numeric_limits<double>::epsilon() ||
                    std::fabs(startPoint.z() - endPoint.z()) < std::numeric_limits<double>::epsilon())
             {
                 endPoint = tpcBox->GetPointOnSurface();
             }
-    
+
             G4ThreeVector direction(endPoint - startPoint);
-    
-            G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle(m_parameters.m_species.c_str());
+
+            G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle(m_parameters.GetParticleGunSpecies().c_str());
             m_pG4ParticleGun->SetParticleDefinition(particleDefinition);
             m_pG4ParticleGun->SetParticlePosition(startPoint);
             m_pG4ParticleGun->SetParticleMomentumDirection(direction);
-            m_pG4ParticleGun->SetParticleEnergy(m_parameters.m_energy*GeV);
-            m_pG4ParticleGun->GeneratePrimaryVertex(anEvent);
+            m_pG4ParticleGun->SetParticleEnergy(m_parameters.GetParticleGunEnergy()*GeV);
+            m_pG4ParticleGun->GeneratePrimaryVertex(pG4Event);
         }
     }
-    else{
-        fParser->GenerateEvent(*anEvent);
+/*
+    else if (m_parameters->GetUseGenieInput())
+    {
+
+  // File has the following format, repeated n_event times
+   // $ begin
+   // $ nuance <nuance_code>
+   // $ vertex <x> <y> <z> <t>
+   // $ track <pdg> <energy> <dir_x> <dir_y> <dir_z> <tracking_status>
+   // $ track ... (repeat as necessary)
+   // $ end
+
+$ begin
+$ nuance 1
+$ vertex 0 0 0 0
+$ track 14 3244 0 0 1 -1
+$ track 18040 37215.5 -999 -999 -999 -1
+$ track 2112 909.404 -0.303744 0.348279 0.886815 -1
+$ track 2212 997.185 0.278017 0.437414 0.855205 -2
+$ track 13 3156.22 -0.0508622 -0.0226286 0.998449 0
+$ track 2212 943.662 -0.802833 -0.171477 0.571012 0
+$ track 2212 1014.54 0.0325571 0.760753 0.648224 0
+$ end
+
+        this->LoadGenieEvents();
     }
+*/
 }
 
+//------------------------------------------------------------------------------
+/*
+void G4TPCPrimaryGeneratorAction::LoadGenieEvents()
+{
+    std::ifstream inputFile(m_parameters->GetGenieTrackerFile());
+
+    if (!inputFile.is_open())
+    {
+        std::cout << "Unable to load genie event from the following file : " << m_parameters->GetGenieTrackerFile() << std::endl;
+    }
+
+    std::string line;
+    std::vector<std::string> tokens;
+
+    while(std::getline(inputFile, line))
+    {
+        tokens = TokeniseLine(line, " $");
+    }
+}
+*/
