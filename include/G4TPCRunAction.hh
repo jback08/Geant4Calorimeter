@@ -31,7 +31,7 @@
 #ifndef G4TPCRunAction_h
 #define G4TPCRunAction_h 1
 
-#include "G4MCParticleUserAction.hh"
+#include "G4TPCMCParticleUserAction.hh"
 #include "G4UserRunAction.hh"
 
 #include "globals.hh"
@@ -45,9 +45,9 @@ public:
     *  @brief  Constructor
     *
     *  @param  pEventContainer event information
-    *  @param  pG4MCParticleUserAction MCParticle user actions
+    *  @param  pG4TPCMCParticleUserAction MCParticle user actions
     */
-    G4TPCRunAction(EventContainer *pEventContainer, G4MCParticleUserAction *pG4MCParticleUserAction);
+    G4TPCRunAction(EventContainer *pEventContainer, G4TPCMCParticleUserAction *pG4TPCMCParticleUserAction);
 
     /**
     *  @brief  Destructor
@@ -69,8 +69,8 @@ public:
     void EndOfRunAction(const G4Run *pG4Run) override;
 
 private:
-    EventContainer         *m_pEventContainer;          ///< Event information
-    G4MCParticleUserAction *m_pG4MCParticleUserAction;  ///< MCParticle user actions
+    EventContainer            *m_pEventContainer;             ///< Event information
+    G4TPCMCParticleUserAction *m_pG4TPCMCParticleUserAction;  ///< MCParticle user actions
 };
 
 #endif

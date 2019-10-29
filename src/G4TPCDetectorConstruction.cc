@@ -58,19 +58,19 @@
 
 //------------------------------------------------------------------------------
 
-G4TPCDetectorConstruction::G4TPCDetectorConstruction(const InputParameters &parameters) : G4VUserDetectorConstruction(),
+G4TPCDetectorConstruction::G4TPCDetectorConstruction(const InputParameters *pInputParameters) : G4VUserDetectorConstruction(),
     m_pG4LogicalVolumeLAr(nullptr),
     m_checkOverlaps(true)
 {
-    m_xCenter = parameters.GetCenterX() * mm;
-    m_yCenter = parameters.GetCenterY() * mm;
-    m_zCenter = parameters.GetCenterZ() * mm;
+    m_xCenter = pInputParameters->GetCenterX() * mm;
+    m_yCenter = pInputParameters->GetCenterY() * mm;
+    m_zCenter = pInputParameters->GetCenterZ() * mm;
 
-    m_xWidth = parameters.GetWidthX() * mm;
-    m_yWidth = parameters.GetWidthY() * mm;
-    m_zWidth = parameters.GetWidthZ() * mm;
+    m_xWidth = pInputParameters->GetWidthX() * mm;
+    m_yWidth = pInputParameters->GetWidthY() * mm;
+    m_zWidth = pInputParameters->GetWidthZ() * mm;
 
-    m_nLayers = parameters.GetNLayers();
+    m_nLayers = pInputParameters->GetNLayers();
 
     m_xLow = m_xCenter - 0.5f * m_xWidth;
     m_yLow = m_yCenter - 0.5f * m_yWidth;
@@ -87,10 +87,7 @@ G4TPCDetectorConstruction::~G4TPCDetectorConstruction()
 
 G4VPhysicalVolume* G4TPCDetectorConstruction::Construct()
 {
-  // Define materials
   DefineMaterials();
-
-  // Define volumes
   return DefineVolumes();
 }
 
@@ -103,23 +100,20 @@ void G4TPCDetectorConstruction::DefineMaterials()
     nistManager->FindOrBuildMaterial("G4_Pb");
 
     // Liquid argon material
-    G4double a;  // mass of a mole;
-    G4double z;  // z=mean number of protons;
-    G4double density;
+    double a;  // mass of a mole;
+    double z;  // z=mean number of protons;
+    double density;
     new G4Material("liquidArgon", z=18., a= 39.95*g/mole, density = 1.390*g/cm3); // The argon by NIST Manager is a gas with a different density
 
     // Vacuum
     new G4Material("Galactic", z=1., a=1.01*g/mole,density = universe_mean_density, kStateGas, 2.73*kelvin, 3.e-18*pascal);
-
-    // Print materials
-    G4cout << *(G4Material::GetMaterialTable()) << G4endl;
 }
 
 //------------------------------------------------------------------------------
 
 G4VPhysicalVolume* G4TPCDetectorConstruction::DefineVolumes()
 {
-    const G4double worldScale(1.05);
+    const double worldScale(1.05);
     G4ThreeVector worldCenter(m_xCenter, m_yCenter, m_zCenter);
 
     // Get materials
@@ -144,7 +138,7 @@ G4VPhysicalVolume* G4TPCDetectorConstruction::DefineVolumes()
     new G4PVPlacement(0, worldCenter, calorLV, "Calorimeter", worldLV, false, 0, m_checkOverlaps);
 
     // Layers
-    const G4double layerThickness(m_zWidth/m_nLayers);
+    const double layerThickness(m_zWidth/m_nLayers);
     G4VSolid* layerS = new G4Box("Layer", m_xWidth/2, m_yWidth/2, layerThickness/2);
     G4LogicalVolume* layerLV = new G4LogicalVolume(layerS, defaultMaterial, "Layer");
     new G4PVReplica("Layer", layerLV, calorLV, kZAxis, m_nLayers, layerThickness);
@@ -154,34 +148,12 @@ G4VPhysicalVolume* G4TPCDetectorConstruction::DefineVolumes()
     G4LogicalVolume* absorberLV = new G4LogicalVolume(absorberS, pG4Material_LAr, "Abso");
     m_pG4LogicalVolumeLAr = new G4PVPlacement(0, worldCenter, absorberLV, "Abso", layerLV, false, 0, m_checkOverlaps);
 
-    // Example of User Limits
-    //
-    // Below is an example of how to set tracking constraints in a given
-    // logical volume
-    //
-    // Sets a max step length in the tracker region, with G4StepLimiter
-
-    G4double maxStep = 0.001*mm;
+    double maxStep = 0.001*mm;
     G4UserLimits* fStepLimit = new G4UserLimits(maxStep);
     worldLV->SetUserLimits(fStepLimit);
     calorLV->SetUserLimits(fStepLimit);
     layerLV->SetUserLimits(fStepLimit);
     absorberLV->SetUserLimits(fStepLimit);
-
-    // Set additional contraints on the track, with G4UserSpecialCuts
-    //
-    // G4double maxLength = 2*trackerLength, maxTime = 0.1*ns, minEkin = 10*MeV;
-    // trackerLV->SetUserLimits(new G4UserLimits(maxStep,
-    //                                           maxLength,
-    //                                           maxTime,
-    //                                           minEkin));
-
-    // print parameters
-    G4cout << G4endl
-        << "------------------------------------------------------------" << G4endl
-        << "---> The calorimeter is " << m_nLayers << " layers of: [ "
-        << layerThickness/mm << "mm of " << pG4Material_LAr->GetName()
-        << "------------------------------------------------------------" << G4endl;
 
     // Visualization attributes
     worldLV->SetVisAttributes (G4VisAttributes::Invisible);

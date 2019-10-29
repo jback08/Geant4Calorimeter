@@ -29,7 +29,7 @@
 /// \brief Implementation of the G4TPCActionInitialization class
 
 #include "EventContainer.hh"
-#include "G4MCParticleUserAction.hh"
+#include "G4TPCMCParticleUserAction.hh"
 #include "G4TPCActionInitialization.hh"
 #include "G4TPCPrimaryGeneratorAction.hh"
 #include "G4TPCRunAction.hh"
@@ -39,10 +39,10 @@
 
 //------------------------------------------------------------------------------
 
-G4TPCActionInitialization::G4TPCActionInitialization(G4TPCDetectorConstruction *pG4TPCDetectorConstruction, const InputParameters &parameters) :
+G4TPCActionInitialization::G4TPCActionInitialization(G4TPCDetectorConstruction *pG4TPCDetectorConstruction, const InputParameters *pInputParameters) :
     G4VUserActionInitialization(),
     m_pG4TPCDetectorConstruction(pG4TPCDetectorConstruction),
-    m_parameters(parameters)
+    m_pInputParameters(pInputParameters)
 {
 }
 
@@ -57,13 +57,13 @@ G4TPCActionInitialization::~G4TPCActionInitialization()
 void G4TPCActionInitialization::Build() const
 {
     // Set user defined actions
-    EventContainer *pEventContainer = new EventContainer(m_parameters);
-    G4MCParticleUserAction *pG4MCParticleUserAction = new G4MCParticleUserAction(pEventContainer, m_parameters);
-    SetUserAction(new G4TPCPrimaryGeneratorAction(m_parameters));
-    SetUserAction(new G4TPCRunAction(pEventContainer, pG4MCParticleUserAction));
-    SetUserAction(new G4TPCEventAction(pEventContainer, pG4MCParticleUserAction));
-    G4UserTrackingAction *trackingAction = (G4UserTrackingAction*) pG4MCParticleUserAction;
+    EventContainer *pEventContainer = new EventContainer(m_pInputParameters);
+    G4TPCMCParticleUserAction *pG4TPCMCParticleUserAction = new G4TPCMCParticleUserAction(pEventContainer, m_pInputParameters);
+    SetUserAction(new G4TPCPrimaryGeneratorAction(m_pInputParameters));
+    SetUserAction(new G4TPCRunAction(pEventContainer, pG4TPCMCParticleUserAction));
+    SetUserAction(new G4TPCEventAction(pEventContainer, pG4TPCMCParticleUserAction));
+    G4UserTrackingAction *trackingAction = (G4UserTrackingAction*) pG4TPCMCParticleUserAction;
     SetUserAction(trackingAction);
-    SetUserAction(new G4TPCSteppingAction(m_pG4TPCDetectorConstruction, pEventContainer, pG4MCParticleUserAction));
+    SetUserAction(new G4TPCSteppingAction(m_pG4TPCDetectorConstruction, pEventContainer, pG4TPCMCParticleUserAction));
 }
 

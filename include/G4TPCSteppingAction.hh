@@ -31,7 +31,7 @@
 #ifndef G4TPCSteppingAction_h
 #define G4TPCSteppingAction_h 1
 
-#include "G4MCParticleUserAction.hh"
+#include "G4TPCMCParticleUserAction.hh"
 #include "G4UserSteppingAction.hh"
 
 #include "globals.hh"
@@ -51,10 +51,10 @@ public:
     *
     *  @param  pG4TPCDetectorConstruction detector properties
     *  @param  pEventContainer event information
-    *  @param  pG4MCParticleUserAction MCParticle user actions
+    *  @param  pG4TPCMCParticleUserAction MCParticle user actions
     */
     G4TPCSteppingAction(const G4TPCDetectorConstruction *pG4TPCDetectorConstruction, EventContainer *pEventContainer,
-        G4MCParticleUserAction *pG4MCParticleUserAction);
+        G4TPCMCParticleUserAction *pG4TPCMCParticleUserAction);
 
     /**
     *  @brief  Destructor
@@ -69,9 +69,9 @@ public:
     void UserSteppingAction(const G4Step *pG4Step) override;
 
 private:
-    const G4TPCDetectorConstruction *m_pG4TPCDetectorConstruction; ///< Detector construction class
-    EventContainer                  *m_pEventContainer;            ///< Event information
-    G4MCParticleUserAction          *m_pG4MCParticleUserAction;    ///< MCParticle user action class
+    const G4TPCDetectorConstruction    *m_pG4TPCDetectorConstruction;    ///< Detector construction class
+    EventContainer                     *m_pEventContainer;               ///< Event information
+    G4TPCMCParticleUserAction          *m_pG4TPCMCParticleUserAction;    ///< MCParticle user action class
 };
 
 #endif

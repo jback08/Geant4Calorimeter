@@ -1,5 +1,5 @@
 /**
- *  @file   include/G4MCParticleUserAction.hh
+ *  @file   include/G4TPCMCParticleUserAction.hh
  *
  *  @brief  Header file for the geant4 MCParticle user action class.
  *
@@ -22,23 +22,23 @@
 #include "MCParticle.hh"
 
 /**
- *  @brief G4MCParticleUserAction class
+ *  @brief G4TPCMCParticleUserAction class
  */
-class G4MCParticleUserAction: public G4UserRunAction, public G4UserEventAction, public G4UserTrackingAction, public G4UserSteppingAction
+class G4TPCMCParticleUserAction: public G4UserRunAction, public G4UserEventAction, public G4UserTrackingAction, public G4UserSteppingAction
 {
 public:
     /**
     *  @brief  Constructor
     *
     *  @param  pEventContainer event information
-    *  @param  inputParameters input parameters
+    *  @param  pInputParameters input parameters
     */
-    G4MCParticleUserAction(EventContainer *pEventContainer, const InputParameters &inputParameters);
+    G4TPCMCParticleUserAction(EventContainer *pEventContainer, const InputParameters *pInputParameters);
 
     /**
      *  Destructor
      */
-    ~G4MCParticleUserAction();
+    ~G4TPCMCParticleUserAction();
 
     /**
     *  @brief  Start of run acction

@@ -1,5 +1,5 @@
 /**
- *  @file   src/G4MCParticleUserAction.cc
+ *  @file   src/G4TPCMCParticleUserAction.cc
  *
  *  @brief  Implementation of the geant4 MCParticle user action class.
  *
@@ -10,12 +10,12 @@
 #include "G4VProcess.hh"
 #include "G4Run.hh"
 #include "G4Step.hh"
-#include "G4MCParticleUserAction.hh"
+#include "G4TPCMCParticleUserAction.hh"
 
-G4MCParticleUserAction::G4MCParticleUserAction(EventContainer *pEventContainer, const InputParameters &inputParameters) :
+G4TPCMCParticleUserAction::G4TPCMCParticleUserAction(EventContainer *pEventContainer, const InputParameters *pInputParameters) :
     m_pEventContainer(pEventContainer),
-    m_keepEMShowerDaughters(inputParameters.GetKeepEMShowerDaughters()),
-    m_energyCut(inputParameters.GetHitEnergyThreshold() * CLHEP::GeV),
+    m_keepEMShowerDaughters(pInputParameters->GetKeepEMShowerDaughters()),
+    m_energyCut(pInputParameters->GetHitEnergyThreshold() * CLHEP::GeV),
     m_currentPdgCode(0),
     m_currentTrackId(std::numeric_limits<int>::max()),
     m_trackIdOffset(0)
@@ -24,25 +24,25 @@ G4MCParticleUserAction::G4MCParticleUserAction(EventContainer *pEventContainer, 
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-G4MCParticleUserAction::~G4MCParticleUserAction()
+G4TPCMCParticleUserAction::~G4TPCMCParticleUserAction()
 {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-void G4MCParticleUserAction::BeginOfRunAction(const G4Run * /*pG4Run*/)
+void G4TPCMCParticleUserAction::BeginOfRunAction(const G4Run * /*pG4Run*/)
 {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-void G4MCParticleUserAction::EndOfRunAction(const G4Run * /*pG4Run*/)
+void G4TPCMCParticleUserAction::EndOfRunAction(const G4Run * /*pG4Run*/)
 {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-void G4MCParticleUserAction::BeginOfEventAction(const G4Event * /*pG4Event*/)
+void G4TPCMCParticleUserAction::BeginOfEventAction(const G4Event * /*pG4Event*/)
 {
     m_currentMCParticleInfo.Clear();
     m_mcParticleList.Clear();
@@ -53,7 +53,7 @@ void G4MCParticleUserAction::BeginOfEventAction(const G4Event * /*pG4Event*/)
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-void G4MCParticleUserAction::EndOfEventAction(const G4Event * /*pG4Event*/)
+void G4TPCMCParticleUserAction::EndOfEventAction(const G4Event * /*pG4Event*/)
 {
     for (auto iter : m_mcParticleList.m_mcParticles)
     {
@@ -78,7 +78,7 @@ void G4MCParticleUserAction::EndOfEventAction(const G4Event * /*pG4Event*/)
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-int G4MCParticleUserAction::GetParent(const int trackId) const
+int G4TPCMCParticleUserAction::GetParent(const int trackId) const
 {
     int parentId(std::numeric_limits<int>::max());
 
@@ -95,14 +95,14 @@ int G4MCParticleUserAction::GetParent(const int trackId) const
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-bool G4MCParticleUserAction::KnownParticle(const int trackId) const
+bool G4TPCMCParticleUserAction::KnownParticle(const int trackId) const
 {
     return m_mcParticleList.KnownParticle(trackId);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-void G4MCParticleUserAction::PreUserTrackingAction(const G4Track *pG4Track)
+void G4TPCMCParticleUserAction::PreUserTrackingAction(const G4Track *pG4Track)
 {
     G4ParticleDefinition *pG4ParticleDefinition = pG4Track->GetDefinition();
     int pdgCode(pG4ParticleDefinition->GetPDGEncoding());
@@ -177,13 +177,13 @@ void G4MCParticleUserAction::PreUserTrackingAction(const G4Track *pG4Track)
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-void G4MCParticleUserAction::PostUserTrackingAction(const G4Track * /*pG4Track*/)
+void G4TPCMCParticleUserAction::PostUserTrackingAction(const G4Track * /*pG4Track*/)
 {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-void G4MCParticleUserAction::UserSteppingAction(const G4Step *pG4Step)
+void G4TPCMCParticleUserAction::UserSteppingAction(const G4Step *pG4Step)
 {
     if (!m_currentMCParticleInfo.m_pMCParticle)
         return;

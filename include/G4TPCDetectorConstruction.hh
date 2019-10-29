@@ -50,7 +50,7 @@ public:
     *
     *  @param  inputParameters configurable parameters
     */
-    G4TPCDetectorConstruction(const InputParameters &inputParameters);
+    G4TPCDetectorConstruction(const InputParameters *pInputParameters);
 
     /**
     *  @brief  Destrucctor
@@ -93,18 +93,18 @@ private:
     */
     G4VPhysicalVolume *DefineVolumes();
 
-    G4double             m_xCenter;              ///< X center of LArTPC
-    G4double             m_yCenter;              ///< Y center of LArTPC
-    G4double             m_zCenter;              ///< Z center of LArTPC
-    G4double             m_xWidth;               ///< X width of LArTPC
-    G4double             m_yWidth;               ///< Y width of LArTPC
-    G4double             m_zWidth;               ///< Z width of LArTPC
-    G4double             m_xLow;                 ///< Low x point in detector
-    G4double             m_yLow;                 ///< Low y point in detector
-    G4double             m_zLow;                 ///< Low z point in detector
-    G4int                m_nLayers;              ///< Number of layers in detector
-    G4VPhysicalVolume*   m_pG4LogicalVolumeLAr;  ///< The absorber physical volume
-    G4bool               m_checkOverlaps;        ///< Option to activate checking of volumes overlaps
+    double             m_xCenter;              ///< X center of LArTPC
+    double             m_yCenter;              ///< Y center of LArTPC
+    double             m_zCenter;              ///< Z center of LArTPC
+    double             m_xWidth;               ///< X width of LArTPC
+    double             m_yWidth;               ///< Y width of LArTPC
+    double             m_zWidth;               ///< Z width of LArTPC
+    double             m_xLow;                 ///< Low x point in detector
+    double             m_yLow;                 ///< Low y point in detector
+    double             m_zLow;                 ///< Low z point in detector
+    int                m_nLayers;              ///< Number of layers in detector
+    G4VPhysicalVolume *m_pG4LogicalVolumeLAr;  ///< The absorber physical volume
+    bool               m_checkOverlaps;        ///< Option to activate checking of volumes overlaps
 };
 
 //------------------------------------------------------------------------------

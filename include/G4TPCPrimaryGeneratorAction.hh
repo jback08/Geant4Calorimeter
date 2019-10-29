@@ -33,10 +33,11 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "globals.hh"
+
 #include "InputParameters.hh"
 
-class G4ParticleGun;
 class G4Event;
+class G4ParticleGun;
 
 /**
 *  @brief  G4TPCPrimaryGeneratorAction class
@@ -47,9 +48,9 @@ public:
     /**
     *  @brief  Constructor
     *
-    *  @param  parameters input information
+    *  @param  pInputParameters input parameters
     */
-    G4TPCPrimaryGeneratorAction(const InputParameters &parameters);
+    G4TPCPrimaryGeneratorAction(const InputParameters *pInputParameters);
 
     /**
     *  @brief  Destructor
@@ -64,8 +65,16 @@ public:
     void GeneratePrimaries(G4Event *pG4Event) override;
 
 private:
-    G4ParticleGun   *m_pG4ParticleGun; ///< G4 particle gun
-    InputParameters  m_parameters;     ///< Input parameters
+    /**
+     *  @brief  Load next genie event
+     *
+     *  @param  pG4Event
+     */
+    void LoadNextGenieEvent(G4Event *pG4Event);
+
+    G4ParticleGun          *m_pG4ParticleGun;       ///< G4 particle gun
+    const InputParameters  *m_pInputParameters;     ///< Input parameters
+    int                     m_eventCounter;         ///< Event counter
 };
 
 #endif

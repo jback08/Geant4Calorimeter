@@ -11,6 +11,11 @@
         <ParticlePerEvent>1</ParticlePerEvent>
     </ParticleGun>
 
+    <GenieInput>
+        <Use>false</Use>
+        <TrackerFile>GenieTrakcerFile.txt</TrackerFile>
+    </GenieInput>
+
     <CenterX>0</CenterX>
     <CenterY>0</CenterY>
     <CenterZ>0</CenterZ>
