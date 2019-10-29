@@ -31,7 +31,7 @@
 #include <chrono>
 #include <random>
 
-#include "G4TPCPrimaryGeneratorAction.hh"
+#include "Randomize.hh"
 
 #include "G4RunManager.hh"
 #include "G4LogicalVolumeStore.hh"
@@ -43,20 +43,17 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "Randomize.hh"
+#include "G4TPCPrimaryGeneratorAction.hh"
 
 //------------------------------------------------------------------------------
 
-G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(const InputParameters &parameters) :
+G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(const InputParameters *pInputParameters) :
     G4VUserPrimaryGeneratorAction(),
     m_pG4ParticleGun(nullptr),
-    m_parameters(parameters),
-    m_eventCouter(0)
+    m_pInputParameters(pInputParameters),
+    m_eventCounter(0)
 {
     m_pG4ParticleGun = new G4ParticleGun();
-
-    if (m_parameters.GetUseGenieInput())
-        this->LoadGenieEvents();
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +68,7 @@ G4TPCPrimaryGeneratorAction::~G4TPCPrimaryGeneratorAction()
 
 void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event *pG4Event)
 {
-    m_eventCouter++;
+    m_eventCounter++;
 
     G4LogicalVolume *worlLV = G4LogicalVolumeStore::GetInstance()->GetVolume("World");
     G4LogicalVolume *tpcLV = G4LogicalVolumeStore::GetInstance()->GetVolume("Calorimeter");
@@ -94,9 +91,9 @@ void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event *pG4Event)
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     CLHEP::HepRandom::setTheSeed(seed);
 
-    if (m_parameters.GetUseParticleGun())
+    if (m_pInputParameters->GetUseParticleGun())
     {
-        for (int particle = 0; particle < m_parameters.GetParticleGunNParticlesPerEvent(); particle++)
+        for (int particle = 0; particle < m_pInputParameters->GetParticleGunNParticlesPerEvent(); particle++)
         {
             G4ThreeVector startPoint(tpcBox->GetPointOnSurface());
             G4ThreeVector endPoint(tpcBox->GetPointOnSurface());
@@ -110,165 +107,40 @@ void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event *pG4Event)
 
             G4ThreeVector direction(endPoint - startPoint);
 
-            G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle(m_parameters.GetParticleGunSpecies().c_str());
+            G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle(m_pInputParameters->GetParticleGunSpecies().c_str());
             m_pG4ParticleGun->SetParticleDefinition(particleDefinition);
             m_pG4ParticleGun->SetParticlePosition(startPoint);
             m_pG4ParticleGun->SetParticleMomentumDirection(direction);
-            m_pG4ParticleGun->SetParticleEnergy(m_parameters.GetParticleGunEnergy()*GeV);
+            m_pG4ParticleGun->SetParticleEnergy(m_pInputParameters->GetParticleGunEnergy()*GeV);
             m_pG4ParticleGun->GeneratePrimaryVertex(pG4Event);
         }
     }
-/*
-    else if (m_parameters->GetUseGenieInput())
+    else if (m_pInputParameters->GetUseGenieInput())
     {
-
-  // File has the following format, repeated n_event times
-   // $ begin
-   // $ nuance <nuance_code>
-   // $ vertex <x> <y> <z> <t>
-   // $ track <pdg> <energy> <dir_x> <dir_y> <dir_z> <tracking_status>
-   // $ track ... (repeat as necessary)
-   // $ end
-
-$ begin
-$ nuance 1
-$ vertex 0 0 0 0
-$ track 14 3244 0 0 1 -1
-$ track 18040 37215.5 -999 -999 -999 -1
-$ track 2112 909.404 -0.303744 0.348279 0.886815 -1
-$ track 2212 997.185 0.278017 0.437414 0.855205 -2
-$ track 13 3156.22 -0.0508622 -0.0226286 0.998449 0
-$ track 2212 943.662 -0.802833 -0.171477 0.571012 0
-$ track 2212 1014.54 0.0325571 0.760753 0.648224 0
-$ end
-
-        this->LoadGenieEvents();
-    }
-*/
-}
-
-//------------------------------------------------------------------------------
-
-void G4TPCPrimaryGeneratorAction::LoadGenieEvents()
-{
-    std::ifstream inputFile(m_parameters.GetGenieTrackerFile());
-
-    if (!inputFile.is_open())
-    {
-        std::cout << "Unable to load genie event from the following file : " << m_parameters.GetGenieTrackerFile() << std::endl;
-    }
-
-    std::string line;
-    std::vector<std::string> tokens;
-    unsigned int eventStatus(0);
-
-    GenieEvent genieEvent;
-
-    while(std::getline(inputFile, line))
-    {
-        tokens = TokeniseLine(line, " $");
-
-        if(eventStatus == 0 && tokens[0] == "begin")
-        {
-            genieEvent = GenieEvent();
-            eventStatus = 1;
-        }
-        else if(eventStatus == 1 && tokens[0] == "nuance")
-        {
-            genieEvent.SetNuanceCode(std::atoi(tokens[1].c_str()));
-            eventStatus = 2;
-        }
-        else if(eventStatus == 2 && tokens[0] == "vertex")
-        {
-            genieEvent.SetVertex(std::stod(tokens[1].c_str()), std::stod(tokens[2].c_str()), std::stod(tokens[3].c_str()));
-            //currentEvent.fTime = helpers::atof(tokens[4]);
-            eventStatus = 3;
-        }
-        else if(eventStatus == 3 && tokens[0] == "track")
-        {
-            const GenieEvent::Track neutrinoTrack = ParseTrackLine(tokens);
-            genieEvent.SetNeutrinoTrack(neutrinoTrack);
-            eventStatus = 4;
-        }
-        else if(eventStatus == 4 && tokens[0] == "track")
-        {
-            // If the final token is not equal to zero then we don't want to consider this particle
-            if(tokens[6] == "0")
-            {
-                genieEvent.AddDaughterTrack(ParseTrackLine(tokens));
-            }
-        }
-        else if(eventStatus == 4 && tokens[0] == "end")
-        {
-            // We have reached the end of this event, so save the event and move on
-            m_genieEvents.push_back(genieEvent);
-            eventStatus = 0;
-        }
-        else if(eventStatus == 4 && tokens[0] == "stop")
-        {
-            std::cout << "Finished reading input file " << m_parameters.GetGenieTrackerFile()  << std::endl;
-        }
-        else
-        {
-            std::cout << "Something has gone wrong in the file. Event status = " << eventStatus << " but line token = " << tokens[0] << std::endl;
-        }
+        this->LoadNextGenieEvent(pG4Event);
     }
 }
 
 //------------------------------------------------------------------------------
 
-GenieEvent::Track G4TPCPrimaryGeneratorAction::ParseTrackLine(const std::vector<std::string> &tokens) const
+void G4TPCPrimaryGeneratorAction::LoadNextGenieEvent(G4Event *pG4Event)
 {
-    int pdg(std::atoi(tokens[1].c_str()));
+    const GenieEvent genieEvent(m_pInputParameters->GetGenieEvents().at(m_eventCounter - 1));
 
-    // ATTN: Nuance-style pdg code for argon, PDG standard: 100ZZZAAAI:, ZZZ = 018, AAA = 040, hence argon = 1000180400
-    if (pdg == 18040)
-        pdg = 1000180400;
+    m_pG4ParticleGun->SetParticlePosition(G4ThreeVector(genieEvent.GetVertexX(), genieEvent.GetVertexY(), genieEvent.GetVertexZ()));
+    m_pG4ParticleGun->SetParticleTime(0.f);
 
-    const double energy(std::stod(tokens[2].c_str()));
-    const double directionX(std::stod(tokens[3].c_str()));
-    const double directionY(std::stod(tokens[4].c_str()));
-    const double directionZ(std::stod(tokens[5].c_str()));
+std::cout << "m_eventCounter - 1 : " << m_eventCounter - 1 << std::endl;
+std::cout << "genieEvent Nuance : " << genieEvent.GetNuanceCode() << std::endl;
+//std::cout << "Daughters : " << genieEvent.GetDaughterTracks().size() << std::endl;
 
-    return GenieEvent::Track(pdg, energy, directionX, directionY, directionZ);
-}
-
-//------------------------------------------------------------------------------
-
-StringVector G4TPCPrimaryGeneratorAction::TokeniseLine(const std::string &line, const std::string &sep)
-{
-    std::size_t startToken = 0, endToken = 0;
-    StringVector tokens;
-
-    if(sep.size() == 0 || line.size() == 0)
-        return tokens;
-
-    while(startToken < line.size())
+    for (const GenieEvent::Track *pTrack : genieEvent.GetDaughterTracks())
     {
-        // Find the first character that isn't a separator
-        startToken = line.find_first_not_of(sep,startToken);
-
-        if(startToken == line.npos)
-        {
-            endToken = line.size();
-        }
-        else
-        {
-            //Find end of token
-            endToken = line.find_first_of(sep, startToken);
-
-            if (endToken == line.npos)
-            {
-                // If there was no end of token, assign it to the end of string
-                endToken = line.size();
-            }
-
-            // Add this token to our vector
-            tokens.push_back(line.substr(startToken,endToken-startToken));
-
-            // We want to start looking from the end of this substring next iteration
-            startToken = endToken;
-        }
+std::cout << "pTrack.GetDirectionX() " << pTrack->GetDirectionX() << std::endl;
+        m_pG4ParticleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle((pTrack->GetPDG())));
+        double kineticEnergy(pTrack->GetEnergy() - m_pG4ParticleGun->GetParticleDefinition()->GetPDGMass());
+        m_pG4ParticleGun->SetParticleEnergy(kineticEnergy);
+        m_pG4ParticleGun->SetParticleMomentumDirection(G4ThreeVector(pTrack->GetDirectionX(), pTrack->GetDirectionY(), pTrack->GetDirectionZ()));
+        m_pG4ParticleGun->GeneratePrimaryVertex(pG4Event);
     }
-    return tokens;
 }

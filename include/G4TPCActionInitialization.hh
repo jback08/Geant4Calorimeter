@@ -48,7 +48,7 @@ public:
     *  @param  pG4TPCDetectorConstruction detector information
     *  @param  parameters generic
     */
-    G4TPCActionInitialization(G4TPCDetectorConstruction *pG4TPCDetectorConstruction, const InputParameters &parameters);
+    G4TPCActionInitialization(G4TPCDetectorConstruction *pG4TPCDetectorConstruction, const InputParameters *pInputParameters);
 
     /**
     *  @brief  Destructor
@@ -62,7 +62,7 @@ public:
 
 private:
     G4TPCDetectorConstruction *m_pG4TPCDetectorConstruction; ///< Detector construction class
-    InputParameters            m_parameters;                 ///< Input parameters
+    const InputParameters     *m_pInputParameters;           ///< Input parameters
 };
 
 #endif

@@ -9,6 +9,9 @@
 #define GENIE_EVENT_H 1
 
 #include <list>
+#include <vector>
+
+typedef std::vector<std::string> StringVector;
 
 /**
  *  @brief GenieEvent class
@@ -22,6 +25,25 @@ public:
     GenieEvent();
 
     /**
+     *  @brief  Copy constructor
+     *
+     *  @param  rhs the GenieEvent to copy
+     */
+    GenieEvent(const GenieEvent &rhs);
+
+    /**
+     *  @brief  Assignment operator
+     *
+     *  @param  rhs the GenieEvent to assign
+     */
+    GenieEvent &operator=(const GenieEvent &rhs);
+
+    /**
+     *  @brief  Destructor
+     */
+    ~GenieEvent();
+
+    /**
      *  @brief  Track class
      */
     class Track
@@ -33,9 +55,22 @@ public:
         Track();
 
         /**
-         *  @brief  Constructor
+         *  @brief  Constructor using defined inputs
+         *
+         *  @param  pdg
+         *  @param  energy
+         *  @param  directionX
+         *  @param  directionY
+         *  @param  directionZ
          */
         Track(int pdg, double energy, double directionX, double directionY, double directionZ);
+
+        /**
+         *  @brief  Constructor to use for parsing tracker file
+         *
+         *  @param  tokens
+         */
+        Track(const StringVector &tokens);
 
         /**
          *  @brief  Get tracck pdg code
@@ -80,14 +115,14 @@ public:
         double   m_directionZ;  ///< Particle direction along z
     };
 
-    typedef std::list<const Track> TrackList;
+    typedef std::list<const Track*> TrackList;
 
     /**
      *  @brief  Add daughter track to event
      *
      *  @param  track to add
      */
-    void AddDaughterTrack(const Track &track);
+    void AddDaughterTrack(const Track *pTrack);
 
     /**
      *  @brief  Get daughter track list
@@ -99,16 +134,16 @@ public:
     /**
      *  @brief  Set neutrino track parameters
      *
-     *  @param  track neutrino track
+     *  @param  pTrack neutrino track
      */
-    void SetNeutrinoTrack(const Track &track);
+    void SetNeutrinoTrack(const Track *pTrack);
 
     /**
      *  @brief  Get neutrino track
      *
      *  @return m_neutrinoTrack
      */
-    Track GetNeutrinoTrack() const;
+    const Track *GetNeutrinoTrack() const;
 
     /**
      *  @brief  Set neutrino nuance code
@@ -155,19 +190,19 @@ public:
     double GetVertexZ() const;
 
 private:
-    Track       m_neutrinoTrack;   ///< Neutrino particle track
-    TrackList   m_daughterTracks;  ///< Daughter particle tracks
-    int         m_nuanceCode;      ///< Neutrino nuance code
-    double      m_vertexX;         ///< Neutrino interaction vertex x
-    double      m_vertexY;         ///< Neutrino interaction vertex y
-    double      m_vertexZ;         ///< Neutrino interaction vertex z
+    const Track   *m_pNeutrinoTrack;   ///< Neutrino particle track
+    TrackList      m_daughterTracks;   ///< Daughter particle tracks
+    int            m_nuanceCode;       ///< Neutrino nuance code
+    double         m_vertexX;          ///< Neutrino interaction vertex x
+    double         m_vertexY;          ///< Neutrino interaction vertex y
+    double         m_vertexZ;          ///< Neutrino interaction vertex z
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline void GenieEvent::AddDaughterTrack(const Track &track)
+inline void GenieEvent::AddDaughterTrack(const Track *pTrack)
 {
-    m_daughterTracks.push_back(track);
+    m_daughterTracks.push_back(new Track(*pTrack));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -179,16 +214,16 @@ inline GenieEvent::TrackList GenieEvent::GetDaughterTracks() const
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline void GenieEvent::SetNeutrinoTrack(const Track &track)
+inline void GenieEvent::SetNeutrinoTrack(const Track *pTrack)
 {
-    m_neutrinoTrack = track;
+    m_pNeutrinoTrack = new Track(*pTrack);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline GenieEvent::Track GenieEvent::GetNeutrinoTrack() const
+inline const GenieEvent::Track *GenieEvent::GetNeutrinoTrack() const
 {
-    return m_neutrinoTrack;
+    return m_pNeutrinoTrack;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 

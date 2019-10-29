@@ -9,9 +9,9 @@
 #include "Xml/tinyxml.hh"
 #include "EventContainer.hh"
 
-EventContainer::EventContainer(const InputParameters &parameters) :
+EventContainer::EventContainer(const InputParameters *pInputParameters) :
     m_eventNumber(0),
-    m_parameters(parameters)
+    m_pInputParameters(pInputParameters)
 {
 }
 
@@ -123,7 +123,7 @@ void EventContainer::SaveXml()
         }
     }
 
-    tiXmlDocument.SaveFile(m_parameters.GetOutputXmlFileName());
+    tiXmlDocument.SaveFile(m_pInputParameters->GetOutputXmlFileName());
     tiXmlDocument.Clear();
 }
 

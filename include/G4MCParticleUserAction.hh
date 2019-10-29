@@ -31,9 +31,9 @@ public:
     *  @brief  Constructor
     *
     *  @param  pEventContainer event information
-    *  @param  inputParameters input parameters
+    *  @param  pInputParameters input parameters
     */
-    G4MCParticleUserAction(EventContainer *pEventContainer, const InputParameters &inputParameters);
+    G4MCParticleUserAction(EventContainer *pEventContainer, const InputParameters *pInputParameters);
 
     /**
      *  Destructor

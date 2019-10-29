@@ -12,10 +12,10 @@
 #include "G4Step.hh"
 #include "G4MCParticleUserAction.hh"
 
-G4MCParticleUserAction::G4MCParticleUserAction(EventContainer *pEventContainer, const InputParameters &inputParameters) :
+G4MCParticleUserAction::G4MCParticleUserAction(EventContainer *pEventContainer, const InputParameters *pInputParameters) :
     m_pEventContainer(pEventContainer),
-    m_keepEMShowerDaughters(inputParameters.GetKeepEMShowerDaughters()),
-    m_energyCut(inputParameters.GetHitEnergyThreshold() * CLHEP::GeV),
+    m_keepEMShowerDaughters(pInputParameters->GetKeepEMShowerDaughters()),
+    m_energyCut(pInputParameters->GetHitEnergyThreshold() * CLHEP::GeV),
     m_currentPdgCode(0),
     m_currentTrackId(std::numeric_limits<int>::max()),
     m_trackIdOffset(0)

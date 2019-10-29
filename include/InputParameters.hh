@@ -10,6 +10,11 @@
 #define INPUT_PARAMETERS_H 1
 
 #include <iostream>
+#include <vector>
+
+#include "GenieEvent.hh"
+
+typedef std::vector<GenieEvent> GenieEvents;
 
 /**
  *  @brief InputParameters class
@@ -112,6 +117,13 @@ public:
     std::string GetGenieTrackerFile() const;
 
     /**
+     *  @brief  Get number of events in genie tracker file
+     *
+     *  @return m_nGenieEvents
+     */
+    int GetGenieNEvents() const;
+
+    /**
      *  @brief  Get the x center of the detector
      *
      *  @return m_xCenter
@@ -160,6 +172,13 @@ public:
      */
     int GetNLayers() const;
 
+    /**
+     *  @brief  Get vector of genie events
+     *
+     *  @return m_genieEvents
+     */
+    GenieEvents GetGenieEvents() const;
+
 private:
     /**
      *  @brief  Load input parameters via xml
@@ -168,16 +187,32 @@ private:
      */
     void LoadViaXml(const std::string &inputXmlFileName);
 
+    /**
+     *  @brief  Load events from genie tracker file
+     */
+    void LoadGenieEvents();
+
+    /**
+     *  @brief  Divide string into series based on deliminator location
+     *
+     *  @param  line input
+     *  @param  sep deliminator
+     *
+     *  @return tokenized string
+     */
+    static StringVector TokeniseLine(const std::string &line, const std::string &sep);
+
     // Particle gun setup
     bool                 m_useParticleGun;        ///< Should generate events using G4 particle gun
     std::string          m_species;               ///< Particle type to simulate if using particle gun
-    double               m_energy;                ///< Energy (total) of particles to simulate
     int                  m_nEvents;               ///< Number of events to simulate
+    double               m_energy;                ///< Energy (total) of particles to simulate
     int                  m_nParticlesPerEvent;    ///< Number of particles per event
 
     // Genie input
     bool                 m_useGenieInput;         ///< Should use genie input
     std::string          m_genieTrackerFile;      ///< Genie tracker file
+    GenieEvents          m_genieEvents;           ///< Genie events
 
     // Geant4 parameters
     std::string          m_outputFileName;        ///< Output file (xml) to write to
@@ -266,6 +301,13 @@ inline std::string InputParameters::GetGenieTrackerFile() const
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
+inline int InputParameters::GetGenieNEvents() const
+{
+    return m_genieEvents.size();
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
 inline double InputParameters::GetCenterX() const
 {
     return m_xCenter;
@@ -312,5 +354,13 @@ inline int InputParameters::GetNLayers() const
 {
     return m_nLayers;
 }
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline GenieEvents InputParameters::GetGenieEvents() const
+{
+    return m_genieEvents;
+}
+
 
 #endif // #ifndef INPUT_PARAMETERS_H

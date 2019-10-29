@@ -5,6 +5,8 @@
  *
  *  $Log: $
  */
+#include <fstream>
+
 #include "G4SystemOfUnits.hh"
 
 #include "Xml/tinyxml.hh"
@@ -12,8 +14,8 @@
 
 InputParameters::InputParameters() :
     m_useParticleGun(false),
+    m_nEvents(0),
     m_energy(-1.),
-    m_nEvents(1),
     m_nParticlesPerEvent(1),
     m_useGenieInput(false),
     m_keepEMShowerDaughters(false),
@@ -33,6 +35,9 @@ InputParameters::InputParameters() :
 InputParameters::InputParameters(const std::string &inputXmlFileName)
 {
     this->LoadViaXml(inputXmlFileName);
+
+    if (m_useGenieInput)
+        this->LoadGenieEvents();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -240,3 +245,123 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
     }
     return;
 }
+
+//------------------------------------------------------------------------------
+
+void InputParameters::LoadGenieEvents()
+{
+    std::ifstream inputFile(m_genieTrackerFile);
+
+    if (!inputFile.is_open())
+    {
+        std::cout << "Unable to load genie event from the following file : " << m_genieTrackerFile << std::endl;
+    }
+
+    std::string line;
+    StringVector tokens;
+    unsigned int eventStatus(0);
+
+    GenieEvent *pGenieEvent(nullptr);
+
+    while(std::getline(inputFile, line))
+    {
+        tokens = TokeniseLine(line, " $");
+std::cout << "eventStatus : " << eventStatus << ", tokens[0] " << tokens[0] << std::endl;
+        if(eventStatus == 0 && tokens[0] == "begin")
+        {
+std::cout << "1" << std::endl;
+            pGenieEvent = new GenieEvent();
+std::cout << "2" << std::endl;
+            eventStatus = 1;
+        }
+        else if(eventStatus == 1 && tokens[0] == "nuance")
+        {
+            pGenieEvent->SetNuanceCode(std::atoi(tokens[1].c_str()));
+            eventStatus = 2;
+        }
+        else if(eventStatus == 2 && tokens[0] == "vertex")
+        {
+            pGenieEvent->SetVertex(std::stod(tokens[1].c_str()), std::stod(tokens[2].c_str()), std::stod(tokens[3].c_str()));
+            //currentEvent.fTime = helpers::atof(tokens[4]);
+            eventStatus = 3;
+        }
+        else if(eventStatus == 3 && tokens[0] == "track")
+        {
+            const GenieEvent::Track neutrinoTrack(tokens);
+            pGenieEvent->SetNeutrinoTrack(&neutrinoTrack);
+            eventStatus = 4;
+        }
+        else if(eventStatus == 4 && tokens[0] == "track")
+        {
+            // If the final token is not equal to zero then we don't want to consider this particle
+            if(tokens[6] == "0")
+            {
+                const GenieEvent::Track daughterTrack(tokens);
+                pGenieEvent->AddDaughterTrack(&daughterTrack);
+            }
+        }
+        else if(eventStatus == 4 && tokens[0] == "end")
+        {
+            // We have reached the end of this event, so save the event and move on
+            m_genieEvents.push_back(*pGenieEvent);
+            delete pGenieEvent;
+            eventStatus = 0;
+        }
+        else if(eventStatus == 0 && tokens[0] == "stop")
+        {
+            std::cout << "Finished reading input file " << m_genieTrackerFile << std::endl;
+        }
+        else
+        {
+            std::cout << "Something has gone wrong in the file. Event status = " << eventStatus << " but line token = " << tokens[0] << std::endl;
+        }
+std::cout << "end loop" << std::endl;
+    }
+
+for (const auto iter : m_genieEvents)
+{
+    std::cout << "Nuance Code : " << iter.GetNuanceCode() << std::endl;
+    std::cout << "Daughters : " << iter.GetDaughterTracks().size() << std::endl;
+}
+}
+
+//------------------------------------------------------------------------------
+
+StringVector InputParameters::TokeniseLine(const std::string &line, const std::string &sep)
+{
+    std::size_t startToken = 0, endToken = 0;
+    StringVector tokens;
+
+    if(sep.size() == 0 || line.size() == 0)
+        return tokens;
+
+    while(startToken < line.size())
+    {
+        // Find the first character that isn't a separator
+        startToken = line.find_first_not_of(sep,startToken);
+
+        if(startToken == line.npos)
+        {
+            endToken = line.size();
+        }
+        else
+        {
+            //Find end of token
+            endToken = line.find_first_of(sep, startToken);
+
+            if (endToken == line.npos)
+            {
+                // If there was no end of token, assign it to the end of string
+                endToken = line.size();
+            }
+
+            // Add this token to our vector
+            tokens.push_back(line.substr(startToken,endToken-startToken));
+
+            // We want to start looking from the end of this substring next iteration
+            startToken = endToken;
+        }
+    }
+    return tokens;
+}
+

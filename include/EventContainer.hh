@@ -22,12 +22,14 @@ class EventContainer
 {
 public:
     /**
-     *  Default constructor
+     *  @brief  Default constructor
+     *
+     *  @param  pInputParameters input parameters
      */
-    EventContainer(const InputParameters &parameters);
+    EventContainer(const InputParameters *pInputParameters);
 
     /**
-     *  Destructor
+     *  @brief  Destructor
      */
     ~EventContainer();
 
@@ -69,10 +71,10 @@ private:
     typedef std::vector<MCParticleList> MCParticleListVector;
     typedef std::vector<CellList> CellListVector;
 
-    int                  m_eventNumber; ///< Event number
-    MCParticleListVector m_mcParticles; ///< MCParticle list
-    CellListVector       m_cells;       ///< Cell list
-    InputParameters      m_parameters;  ///< Input parameters
+    int                        m_eventNumber;       ///< Event number
+    MCParticleListVector       m_mcParticles;       ///< MCParticle list
+    CellListVector             m_cells;             ///< Cell list
+    const InputParameters     *m_pInputParameters;  ///< Input parameters
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 

@@ -68,9 +68,9 @@ int main(int argc,char** argv)
         return 1;
     }
 
-    InputParameters parameters(argv[1]);
+    const InputParameters inputParameters(argv[1]);
 
-    if (!parameters.Valid())
+    if (!inputParameters.Valid())
     {
         PrintUsage();
         return 1;
@@ -83,14 +83,14 @@ int main(int argc,char** argv)
     G4RunManager *pG4RunManager = new G4RunManager;
 
     // Set mandatory and optional initialization classes
-    G4TPCDetectorConstruction *pG4TPCDetectorConstruction = new G4TPCDetectorConstruction(parameters);
+    G4TPCDetectorConstruction *pG4TPCDetectorConstruction = new G4TPCDetectorConstruction(&inputParameters);
     pG4RunManager->SetUserInitialization(pG4TPCDetectorConstruction);
 
     G4VModularPhysicsList *pG4VModularPhysicsList = new QGSP_BERT;
     pG4VModularPhysicsList->RegisterPhysics(new G4StepLimiterPhysics());
     pG4RunManager->SetUserInitialization(pG4VModularPhysicsList);
 
-    G4TPCActionInitialization *pG4TPCActionInitialization = new G4TPCActionInitialization(pG4TPCDetectorConstruction, parameters);
+    G4TPCActionInitialization *pG4TPCActionInitialization = new G4TPCActionInitialization(pG4TPCDetectorConstruction, &inputParameters);
     pG4RunManager->SetUserInitialization(pG4TPCActionInitialization);
 
     // Initialize visualization
@@ -100,7 +100,10 @@ int main(int argc,char** argv)
     // Get the pointer to the User Interface manager
     G4UImanager* pG4UImanager = G4UImanager::GetUIpointer();
     pG4UImanager->ApplyCommand("/run/initialize");
-    pG4UImanager->ApplyCommand("/run/beamOn " + std::to_string(parameters.GetParticleGunNEvents()));
+
+    unsigned int nEventsToProcess(inputParameters.GetUseParticleGun() ? inputParameters.GetParticleGunNEvents() : inputParameters.GetGenieNEvents());
+
+    pG4UImanager->ApplyCommand("/run/beamOn " + std::to_string(nEventsToProcess));
 
     // Job termination
     // Free the store: user actions, physics_list and detector_description are
