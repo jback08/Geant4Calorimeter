@@ -266,12 +266,10 @@ void InputParameters::LoadGenieEvents()
     while(std::getline(inputFile, line))
     {
         tokens = TokeniseLine(line, " $");
-std::cout << "eventStatus : " << eventStatus << ", tokens[0] " << tokens[0] << std::endl;
+
         if(eventStatus == 0 && tokens[0] == "begin")
         {
-std::cout << "1" << std::endl;
             pGenieEvent = new GenieEvent();
-std::cout << "2" << std::endl;
             eventStatus = 1;
         }
         else if(eventStatus == 1 && tokens[0] == "nuance")
@@ -315,14 +313,7 @@ std::cout << "2" << std::endl;
         {
             std::cout << "Something has gone wrong in the file. Event status = " << eventStatus << " but line token = " << tokens[0] << std::endl;
         }
-std::cout << "end loop" << std::endl;
     }
-
-for (const auto iter : m_genieEvents)
-{
-    std::cout << "Nuance Code : " << iter.GetNuanceCode() << std::endl;
-    std::cout << "Daughters : " << iter.GetDaughterTracks().size() << std::endl;
-}
 }
 
 //------------------------------------------------------------------------------

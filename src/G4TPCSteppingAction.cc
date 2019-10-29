@@ -39,11 +39,11 @@
 //------------------------------------------------------------------------------
 
 G4TPCSteppingAction::G4TPCSteppingAction(const G4TPCDetectorConstruction *pG4TPCDetectorConstruction, EventContainer *pEventContainer,
-    G4MCParticleUserAction *pG4MCParticleUserAction) :
+    G4TPCMCParticleUserAction *pG4TPCMCParticleUserAction) :
     G4UserSteppingAction(),
     m_pG4TPCDetectorConstruction(pG4TPCDetectorConstruction),
     m_pEventContainer(pEventContainer),
-    m_pG4MCParticleUserAction(pG4MCParticleUserAction)
+    m_pG4TPCMCParticleUserAction(pG4TPCMCParticleUserAction)
 {
 }
 
@@ -57,7 +57,7 @@ G4TPCSteppingAction::~G4TPCSteppingAction()
 
 void G4TPCSteppingAction::UserSteppingAction(const G4Step *pG4Step)
 {
-    m_pG4MCParticleUserAction->UserSteppingAction(pG4Step);
+    m_pG4TPCMCParticleUserAction->UserSteppingAction(pG4Step);
 
     // Collect energy and track length step by step
     G4VPhysicalVolume* pG4VPhysicalVolume = pG4Step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();

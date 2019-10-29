@@ -39,12 +39,11 @@
 
 //------------------------------------------------------------------------------
 
-G4TPCRunAction::G4TPCRunAction(EventContainer *pEventContainer, G4MCParticleUserAction *pG4MCParticleUserAction) :
+G4TPCRunAction::G4TPCRunAction(EventContainer *pEventContainer, G4TPCMCParticleUserAction *pG4TPCMCParticleUserAction) :
     G4UserRunAction(),
     m_pEventContainer(pEventContainer),
-    m_pG4MCParticleUserAction(pG4MCParticleUserAction)
+    m_pG4TPCMCParticleUserAction(pG4TPCMCParticleUserAction)
 {
-    G4RunManager::GetRunManager()->SetPrintProgress(1);
 }
 
 //------------------------------------------------------------------------------
@@ -57,17 +56,8 @@ G4TPCRunAction::~G4TPCRunAction()
 
 void G4TPCRunAction::BeginOfRunAction(const G4Run *pG4Run)
 {
-    m_pG4MCParticleUserAction->BeginOfRunAction(pG4Run);
+    m_pG4TPCMCParticleUserAction->BeginOfRunAction(pG4Run);
 
-    //inform the runManager to save random number seed
-    //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
-
-    /*
-     * Added autoseed functionality to resolve issue with specifying seeds greater than LONG_MAX
-     */
-    G4cout << "*******************" << G4endl;
-    G4cout << "*** AUTOSEED ON ***" << G4endl;
-    G4cout << "*******************" << G4endl;
     long seeds[2];
     time_t systime = time(NULL);
     seeds[0] = (long) systime;
@@ -75,14 +65,14 @@ void G4TPCRunAction::BeginOfRunAction(const G4Run *pG4Run)
     G4Random::setTheSeeds(seeds);
     G4Random::showEngineStatus();
 
-    m_pG4MCParticleUserAction->BeginOfRunAction(pG4Run);
+    m_pG4TPCMCParticleUserAction->BeginOfRunAction(pG4Run);
 }
 
 //------------------------------------------------------------------------------
 
 void G4TPCRunAction::EndOfRunAction(const G4Run *pG4Run)
 {
-    m_pG4MCParticleUserAction->EndOfRunAction(pG4Run);
+    m_pG4TPCMCParticleUserAction->EndOfRunAction(pG4Run);
     m_pEventContainer->SaveXml();
 }
 

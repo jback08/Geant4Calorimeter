@@ -69,6 +69,7 @@ G4TPCPrimaryGeneratorAction::~G4TPCPrimaryGeneratorAction()
 void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event *pG4Event)
 {
     m_eventCounter++;
+    std::cout << "Event Number : " << m_eventCounter << std::endl;
 
     G4LogicalVolume *worlLV = G4LogicalVolumeStore::GetInstance()->GetVolume("World");
     G4LogicalVolume *tpcLV = G4LogicalVolumeStore::GetInstance()->GetVolume("Calorimeter");
@@ -130,13 +131,8 @@ void G4TPCPrimaryGeneratorAction::LoadNextGenieEvent(G4Event *pG4Event)
     m_pG4ParticleGun->SetParticlePosition(G4ThreeVector(genieEvent.GetVertexX(), genieEvent.GetVertexY(), genieEvent.GetVertexZ()));
     m_pG4ParticleGun->SetParticleTime(0.f);
 
-std::cout << "m_eventCounter - 1 : " << m_eventCounter - 1 << std::endl;
-std::cout << "genieEvent Nuance : " << genieEvent.GetNuanceCode() << std::endl;
-//std::cout << "Daughters : " << genieEvent.GetDaughterTracks().size() << std::endl;
-
     for (const GenieEvent::Track *pTrack : genieEvent.GetDaughterTracks())
     {
-std::cout << "pTrack.GetDirectionX() " << pTrack->GetDirectionX() << std::endl;
         m_pG4ParticleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle((pTrack->GetPDG())));
         double kineticEnergy(pTrack->GetEnergy() - m_pG4ParticleGun->GetParticleDefinition()->GetPDGMass());
         m_pG4ParticleGun->SetParticleEnergy(kineticEnergy);

@@ -32,7 +32,7 @@
 #define G4TPCEventAction_h 1
 
 #include "EventContainer.hh"
-#include "G4MCParticleUserAction.hh"
+#include "G4TPCMCParticleUserAction.hh"
 #include "G4UserEventAction.hh"
 
 #include "globals.hh"
@@ -50,9 +50,9 @@ public:
     *  @brief  Constructor
     *
     *  @param  pEventContainer event information
-    *  @param  pG4MCParticleUserAction MCParticle information
+    *  @param  pG4TPCMCParticleUserAction MCParticle information
     */
-    G4TPCEventAction(EventContainer *pEventContainer, G4MCParticleUserAction *pG4MCParticleUserAction);
+    G4TPCEventAction(EventContainer *pEventContainer, G4TPCMCParticleUserAction *pG4TPCMCParticleUserAction);
 
     /**
     *  @brief  Destrucctor
@@ -74,8 +74,8 @@ public:
     virtual void EndOfEventAction(const G4Event *pG4Event) override;
 
 private:
-    EventContainer         *m_pEventContainer;          ///< Event information
-    G4MCParticleUserAction *m_pG4MCParticleUserAction;  ///< MC particle information
+    EventContainer             *m_pEventContainer;             ///< Event information
+    G4TPCMCParticleUserAction  *m_pG4TPCMCParticleUserAction;  ///< MC particle information
 };
 
 #endif

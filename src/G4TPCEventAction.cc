@@ -40,10 +40,10 @@
 
 //------------------------------------------------------------------------------
 
-G4TPCEventAction::G4TPCEventAction(EventContainer *pEventContainer, G4MCParticleUserAction *pG4MCParticleUserAction) :
+G4TPCEventAction::G4TPCEventAction(EventContainer *pEventContainer, G4TPCMCParticleUserAction *pG4TPCMCParticleUserAction) :
     G4UserEventAction(),
     m_pEventContainer(pEventContainer),
-    m_pG4MCParticleUserAction(pG4MCParticleUserAction)
+    m_pG4TPCMCParticleUserAction(pG4TPCMCParticleUserAction)
 {
 }
 
@@ -57,7 +57,7 @@ G4TPCEventAction::~G4TPCEventAction()
 
 void G4TPCEventAction::BeginOfEventAction(const G4Event *pG4Event)
 {
-    m_pG4MCParticleUserAction->BeginOfEventAction(pG4Event);
+    m_pG4TPCMCParticleUserAction->BeginOfEventAction(pG4Event);
     m_pEventContainer->BeginOfEventAction();
 }
 
@@ -65,7 +65,7 @@ void G4TPCEventAction::BeginOfEventAction(const G4Event *pG4Event)
 
 void G4TPCEventAction::EndOfEventAction(const G4Event *pG4Event)
 {
-    m_pG4MCParticleUserAction->EndOfEventAction(pG4Event);
+    m_pG4TPCMCParticleUserAction->EndOfEventAction(pG4Event);
     m_pEventContainer->EndOfEventAction();
 }
 
