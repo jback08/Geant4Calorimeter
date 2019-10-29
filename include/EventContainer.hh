@@ -34,17 +34,17 @@ public:
     ~EventContainer();
 
     /**
-     *  Increment variables for current event
+     *  @brief  Increment variables for current event
      */
     void BeginOfEventAction();
 
     /**
-     *  Increment variables for next event
+     *  @brief  Increment variables for next event
      */
     void EndOfEventAction();
 
     /**
-     *  Save events to xml
+     *  @brief  Save events to xml
      */
     void SaveXml();
 
@@ -56,16 +56,25 @@ public:
     CellList &GetCurrentCellList();
 
     /**
-     *  Get the current MCParticle list
+     *  @brief  Get the current MCParticle list
      *
      *  @return the current list of MCParticles
      */
     MCParticleList &GetCurrentMCParticleList();
 
     /**
-     *  Set the current MCParticle list
+     *  @brief  Set the current MCParticle list
+     *
+     *  @param  mcParticleList particle list to set
      */
     void SetCurrentMCParticleList(const MCParticleList &mcParticleList);
+
+    /**
+     *  @brief  Get the event number
+     *
+     *  @return m_eventNumber
+     */
+    int GetEventNumber() const;
 
 private:
     typedef std::vector<MCParticleList> MCParticleListVector;
@@ -96,6 +105,13 @@ inline MCParticleList &EventContainer::GetCurrentMCParticleList()
 inline void EventContainer::SetCurrentMCParticleList(const MCParticleList &mcParticleList)
 {
     m_mcParticles.at(m_eventNumber) = mcParticleList;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline int EventContainer::GetEventNumber() const
+{
+   return m_eventNumber;
 }
 
 #endif // #ifndef EVENT_CONTAINER_H

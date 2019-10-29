@@ -34,6 +34,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "globals.hh"
 
+#include "EventContainer.hh"
 #include "InputParameters.hh"
 
 class G4Event;
@@ -48,9 +49,10 @@ public:
     /**
     *  @brief  Constructor
     *
+    *  @param  pEventContainer event container
     *  @param  pInputParameters input parameters
     */
-    G4TPCPrimaryGeneratorAction(const InputParameters *pInputParameters);
+    G4TPCPrimaryGeneratorAction(const EventContainer *pEventContainer, const InputParameters *pInputParameters);
 
     /**
     *  @brief  Destructor
@@ -74,9 +76,7 @@ private:
 
     G4ParticleGun          *m_pG4ParticleGun;       ///< G4 particle gun
     const InputParameters  *m_pInputParameters;     ///< Input parameters
-    int                     m_eventCounter;         ///< Event counter
+    const EventContainer   *m_pEventContainer;      ///< Event container
 };
 
 #endif
-
-

@@ -49,6 +49,8 @@ void G4TPCMCParticleUserAction::BeginOfEventAction(const G4Event * /*pG4Event*/)
     m_currentTrackId = std::numeric_limits<int>::max();
     m_parentIdMap.clear();
     m_currentPdgCode = 0;
+
+    // If neutrino add here
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
