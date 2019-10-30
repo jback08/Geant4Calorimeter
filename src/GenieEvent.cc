@@ -80,12 +80,13 @@ GenieEvent::Track::Track() :
 
 GenieEvent::Track::Track(const StringVector &tokens) :
     m_pdg(std::atoi(tokens.at(1).c_str())),
-    m_energy(std::stod(tokens.at(2).c_str())),
+    m_energy(std::stod(tokens.at(2).c_str())/1000.),
     m_directionX(std::stod(tokens.at(3).c_str())),
     m_directionY(std::stod(tokens.at(4).c_str())),
     m_directionZ(std::stod(tokens.at(5).c_str()))
 {
-    // ATTN: Nuance-style pdg code for argon, PDG standard: 100ZZZAAAI:, ZZZ = 018, AAA = 040, hence argon = 1000180400
+    // ATTN : Genie standard hass enenrgy in MeV, convert to GeV here.
+    // ATTN : Nuance-style pdg code for argon, PDG standard: 100ZZZAAAI:, ZZZ = 018, AAA = 040, hence argon = 1000180400
     if (m_pdg == 18040)
         m_pdg = 1000180400;
 }

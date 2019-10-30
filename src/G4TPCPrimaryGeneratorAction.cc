@@ -131,8 +131,8 @@ void G4TPCPrimaryGeneratorAction::LoadNextGenieEvent(G4Event *pG4Event)
     for (const GenieEvent::Track *pTrack : genieEvent.GetDaughterTracks())
     {
         m_pG4ParticleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle((pTrack->GetPDG())));
-        double kineticEnergy(pTrack->GetEnergy() - m_pG4ParticleGun->GetParticleDefinition()->GetPDGMass());
-        m_pG4ParticleGun->SetParticleEnergy(kineticEnergy);
+        double kineticEnergy(pTrack->GetEnergy() - m_pG4ParticleGun->GetParticleDefinition()->GetPDGMass() / GeV);
+        m_pG4ParticleGun->SetParticleEnergy(kineticEnergy * GeV);
         m_pG4ParticleGun->SetParticleMomentumDirection(G4ThreeVector(pTrack->GetDirectionX(), pTrack->GetDirectionY(), pTrack->GetDirectionZ()));
         m_pG4ParticleGun->GeneratePrimaryVertex(pG4Event);
     }

@@ -110,17 +110,16 @@ public:
 private:
     typedef std::map<int, int> IntIntMap;
 
-    EventContainer  *m_pEventContainer;        ///< Current event information
-    bool             m_keepEMShowerDaughters;  ///< Option to keep or discard daughters of em showers
-    double           m_energyCut;              ///< Energy threshold for tracking particles
-    MCParticleInfo   m_currentMCParticleInfo;  ///< Active MC particle information
-    MCParticleList   m_mcParticleList;         ///< List of MC particles in the event
-    IntIntMap        m_parentIdMap;            ///< Map of MC particle track id to parent MCParticle id
-    int              m_currentPdgCode;         ///< PDG code of active MC particle
-    int              m_currentTrackId;         ///< Current track id of active MC particle
-    int              m_trackIdOffset;          ///< Track id offset
+    EventContainer        *m_pEventContainer;        ///< Current event information
+    const InputParameters *m_pInputParameters;       ///< Input parameters
+    bool                   m_keepEMShowerDaughters;  ///< Option to keep or discard daughters of em showers
+    double                 m_energyCut;              ///< Energy threshold for tracking particles
+    MCParticleInfo         m_currentMCParticleInfo;  ///< Active MC particle information
+    MCParticleList         m_mcParticleList;         ///< List of MC particles in the event
+    IntIntMap              m_parentIdMap;            ///< Map of MC particle track id to parent MCParticle id
+    int                    m_currentPdgCode;         ///< PDG code of active MC particle
+    int                    m_currentTrackId;         ///< Current track id of active MC particle
+    int                    m_trackIdOffset;          ///< Track id offset
 };
-
-//------------------------------------------------------------------------------------------------------------------------------------------ 
 
 #endif // #ifndef GEANT4_MCPARTICLE_USER_ACTION_H
