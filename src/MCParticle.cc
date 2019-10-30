@@ -47,14 +47,14 @@ MCParticle::Trajectory::Trajectory()
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-MCParticle::Trajectory::Trajectory(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV)
+MCParticle::Trajectory::Trajectory(const G4LorentzVector &vtxTLV, const G4LorentzVector &momentumTLV)
 {
     m_trajectoryPointVector.push_back(std::make_pair(vtxTLV, momentumTLV));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-const TLorentzVector &MCParticle::Trajectory::GetPosition(const int i) const
+const G4LorentzVector &MCParticle::Trajectory::GetPosition(const int i) const
 {
     TrajectoryPointVector::const_iterator iter = m_trajectoryPointVector.begin();
     std::advance(iter, i);
@@ -63,7 +63,7 @@ const TLorentzVector &MCParticle::Trajectory::GetPosition(const int i) const
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-const TLorentzVector &MCParticle::Trajectory::GetMomentum(const int i) const
+const G4LorentzVector &MCParticle::Trajectory::GetMomentum(const int i) const
 {
     TrajectoryPointVector::const_iterator iter = m_trajectoryPointVector.begin();
     std::advance(iter, i);
@@ -72,7 +72,7 @@ const TLorentzVector &MCParticle::Trajectory::GetMomentum(const int i) const
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-void MCParticle::Trajectory::AddTrajectoryPoint(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV)
+void MCParticle::Trajectory::AddTrajectoryPoint(const G4LorentzVector &vtxTLV, const G4LorentzVector &momentumTLV)
 {
     m_trajectoryPointVector.push_back(std::make_pair(vtxTLV, momentumTLV));
 }

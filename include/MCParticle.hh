@@ -10,12 +10,13 @@
 #define MCPARTICLE_H 1
 
 #include <map>
+#include <vector>
 
-#include <TLorentzVector.h>
+#include "G4LorentzVector.hh"
 
 typedef std::vector<int> IntVector;
 typedef std::vector<float> FloatVector;
-typedef std::pair<TLorentzVector, TLorentzVector> TrajectoryPoint;
+typedef std::pair<G4LorentzVector, G4LorentzVector> TrajectoryPoint;
 typedef std::vector<TrajectoryPoint> TrajectoryPointVector;
 typedef std::vector<int, std::string> TrajectoryProcessVector;
 
@@ -63,7 +64,7 @@ public:
 	 *  @param  vtxTLV position of particle at the start of the trajectory
 	 *  @param  momentumTLV momentum of particle at the start of the trajectory
 	 */
-        Trajectory(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV);
+        Trajectory(const G4LorentzVector &vtxTLV, const G4LorentzVector &momentumTLV);
 
 	/**
 	 *  @brief  Get the position at a given trajectory point
@@ -72,7 +73,7 @@ public:
 	 *
 	 *  @return position at the point of interest
 	 */
-        const TLorentzVector &GetPosition(const int i) const;
+        const G4LorentzVector &GetPosition(const int i) const;
 
 	/**
 	 *  @brief  Get the momentum at a given trajectory point
@@ -81,7 +82,7 @@ public:
 	 *
 	 *  @return momentum at the point of interest
 	 */
-        const TLorentzVector &GetMomentum(const int i) const;
+        const G4LorentzVector &GetMomentum(const int i) const;
 
 	/**
 	 *  @brief  Get the x position at a given trajectory point
@@ -159,7 +160,7 @@ public:
 	 *  @param  vtxTLV the position to add
 	 *  @param  momentumTLV the momentim to add
 	 */
-	void AddTrajectoryPoint(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV);
+	void AddTrajectoryPoint(const G4LorentzVector &vtxTLV, const G4LorentzVector &momentumTLV);
 
     private:
         TrajectoryPointVector m_trajectoryPointVector; ///< Vector of trajectory points
@@ -237,7 +238,7 @@ public:
      *
      *  @return position at the ith trajectory point
      */
-    const TLorentzVector &GetPosition(const int i = 0) const;
+    const G4LorentzVector &GetPosition(const int i = 0) const;
 
     /**
      *  @brief  Get the x position of this MC particle at the ith trajectory point
@@ -280,7 +281,7 @@ public:
      *
      *  @return end position
      */
-    const TLorentzVector &GetEndPosition() const;
+    const G4LorentzVector &GetEndPosition() const;
 
     /**
      *  @brief  Get the x position of this MC particle at the end of the trajectory
@@ -317,7 +318,7 @@ public:
      *
      *  @return the momentum of this MC particle at the ith trajetory point
      */
-    const TLorentzVector &GetMomentum(const int i = 0) const;
+    const G4LorentzVector &GetMomentum(const int i = 0) const;
 
     /**
      *  @brief  Get the x momentum component of this MC particle at the ith trajetory point
@@ -369,7 +370,7 @@ public:
      *
      *  @return end momentum
      */
-    const TLorentzVector &GetEndMomentum() const;
+    const G4LorentzVector &GetEndMomentum() const;
 
     /**
      *  @brief  Get the x momentum component of this MC particle at the end of the trajectory
@@ -405,7 +406,7 @@ public:
      *  @param  vtxTLV position to add
      *  @param  momentumTLV momentum to add
      */
-    void AddTrajectoryPoint(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV);
+    void AddTrajectoryPoint(const G4LorentzVector &vtxTLV, const G4LorentzVector &momentumTLV);
 
 private:
     int         m_status;        ///< MC particle status
@@ -487,7 +488,7 @@ inline int MCParticle::GetNumberOfTrajectoryPoints() const
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline const TLorentzVector &MCParticle::GetPosition(const int i) const
+inline const G4LorentzVector &MCParticle::GetPosition(const int i) const
 {
     return m_trajectory.GetPosition(i);
 }
@@ -496,33 +497,33 @@ inline const TLorentzVector &MCParticle::GetPosition(const int i) const
 
 inline double MCParticle::GetPositionX(const int i) const
 {
-    return m_trajectory.GetPosition(i).X();
+    return m_trajectory.GetPosition(i).x();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetPositionY(const int i) const
 {
-    return m_trajectory.GetPosition(i).Y();
+    return m_trajectory.GetPosition(i).y();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetPositionZ(const int i) const
 {
-    return m_trajectory.GetPosition(i).Z();
+    return m_trajectory.GetPosition(i).z();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetTime(const int i) const
 {
-    return m_trajectory.GetPosition(i).T();
+    return m_trajectory.GetPosition(i).t();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline const TLorentzVector &MCParticle::GetEndPosition() const
+inline const G4LorentzVector &MCParticle::GetEndPosition() const
 {
     return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1);
 }
@@ -531,33 +532,33 @@ inline const TLorentzVector &MCParticle::GetEndPosition() const
 
 inline double MCParticle::GetEndPositionX() const
 {
-    return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1).X();
+    return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1).x();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetEndPositionY() const
 {
-    return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1).Y();
+    return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1).y();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetEndPositionZ() const
 {
-    return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1).Z();
+    return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1).z();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetEndTime() const
 {
-    return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1).T();
+    return m_trajectory.GetPosition(m_trajectory.GetNumberOfTrajectoryPoints() - 1).t();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline const TLorentzVector &MCParticle::GetMomentum(const int i) const
+inline const G4LorentzVector &MCParticle::GetMomentum(const int i) const
 {
     return m_trajectory.GetMomentum(i);
 }
@@ -566,40 +567,40 @@ inline const TLorentzVector &MCParticle::GetMomentum(const int i) const
 
 inline double MCParticle::GetMomentumX(const int i) const
 {
-    return m_trajectory.GetMomentum(i).Px();
+    return m_trajectory.GetMomentum(i).px();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetMomentumY(const int i) const
 {
-    return m_trajectory.GetMomentum(i).Py();
+    return m_trajectory.GetMomentum(i).py();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetMomentumZ(const int i) const
 {
-    return m_trajectory.GetMomentum(i).Pz();
+    return m_trajectory.GetMomentum(i).pz();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetEnergy(const int i) const
 {
-    return m_trajectory.GetMomentum(i).E();
+    return m_trajectory.GetMomentum(i).e();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetStepMomentum(const int i) const
 {
-    return std::sqrt(std::pow(m_trajectory.GetMomentum(i).E(), 2) - std::pow(m_mass, 2));
+    return std::sqrt(std::pow(m_trajectory.GetMomentum(i).e(), 2) - std::pow(m_mass, 2));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline const TLorentzVector &MCParticle::GetEndMomentum() const
+inline const G4LorentzVector &MCParticle::GetEndMomentum() const
 {
     return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1);
 }
@@ -608,33 +609,33 @@ inline const TLorentzVector &MCParticle::GetEndMomentum() const
 
 inline double MCParticle::GetEndMomentumX() const
 {
-    return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1).Px();
+    return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1).px();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetEndMomentumY() const
 {
-    return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1).Py();
+    return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1).py();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetEndMomentumZ() const
 {
-    return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1).Pz();
+    return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1).pz();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::GetEndEnergy() const
 {
-    return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1).E();
+    return m_trajectory.GetMomentum(m_trajectory.GetNumberOfTrajectoryPoints() - 1).e();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline void MCParticle::AddTrajectoryPoint(const TLorentzVector &vtxTLV, const TLorentzVector &momentumTLV)
+inline void MCParticle::AddTrajectoryPoint(const G4LorentzVector &vtxTLV, const G4LorentzVector &momentumTLV)
 {
     m_trajectory.AddTrajectoryPoint(vtxTLV, momentumTLV);
     return;
@@ -645,49 +646,49 @@ inline void MCParticle::AddTrajectoryPoint(const TLorentzVector &vtxTLV, const T
 
 inline double MCParticle::Trajectory::GetPositionX(const int i) const
 {
-    return this->GetPosition(i).X();
+    return this->GetPosition(i).x();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::Trajectory::GetPositionY(const int i) const
 {
-    return this->GetPosition(i).Y();
+    return this->GetPosition(i).y();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::Trajectory::GetPositionZ(const int i) const
 {
-    return this->GetPosition(i).Z();
+    return this->GetPosition(i).z();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::Trajectory::GetMomentumX(const int i) const
 {
-    return this->GetMomentum(i).X();
+    return this->GetMomentum(i).x();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::Trajectory::GetMomentumY(const int i) const
 {
-    return this->GetMomentum(i).Y();
+    return this->GetMomentum(i).y();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::Trajectory::GetMomentumZ(const int i) const
 {
-    return this->GetMomentum(i).Z();
+    return this->GetMomentum(i).z();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline double MCParticle::Trajectory::GetEnergy(const int i) const
 {
-    return this->GetMomentum(i).E();
+    return this->GetMomentum(i).e();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
