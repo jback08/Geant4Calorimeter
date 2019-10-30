@@ -101,14 +101,10 @@ int main(int argc,char** argv)
     G4UImanager* pG4UImanager = G4UImanager::GetUIpointer();
     pG4UImanager->ApplyCommand("/run/initialize");
 
-    unsigned int nEventsToProcess(inputParameters.GetUseParticleGun() ? inputParameters.GetParticleGunNEvents() : inputParameters.GetGenieNEvents());
+    unsigned int nEventsToProcess(inputParameters.GetUseParticleGun() ? inputParameters.GetMaxNEventsToProcess() :
+        std::min(inputParameters.GetGenieNEvents(), inputParameters.GetMaxNEventsToProcess()));
 
     pG4UImanager->ApplyCommand("/run/beamOn " + std::to_string(nEventsToProcess));
-
-    // Job termination
-    // Free the store: user actions, physics_list and detector_description are
-    // owned and deleted by the run manager, so they should not be deleted
-    // in the main() program !
 
     delete pG4VisManager;
     delete pG4RunManager;

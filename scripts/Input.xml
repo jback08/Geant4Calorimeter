@@ -1,21 +1,9 @@
 <G4TPC>
     <Output3DXmlFileName>Boris.xml</Output3DXmlFileName>
+    <MaxNEventsToProcess>3</MaxNEventsToProcess>
+
     <KeepMCEmShowerDaughters>true</KeepMCEmShowerDaughters>
     <HitThresholdEnergy>0</HitThresholdEnergy>
-
-    <ParticleGun>
-        <Use>true</Use>
-        <Energy>2</Energy>
-        <Species>mu-</Species>
-        <NEvents>2</NEvents>
-        <ParticlePerEvent>1</ParticlePerEvent>
-    </ParticleGun>
-
-    <GenieInput>
-        <Use>false</Use>
-        <TrackerFile>GenieTrakcerFile.txt</TrackerFile>
-    </GenieInput>
-
     <CenterX>0</CenterX>
     <CenterY>0</CenterY>
     <CenterZ>0</CenterZ>
@@ -23,4 +11,16 @@
     <WidthY>1000</WidthY>
     <WidthZ>1000</WidthZ>
     <NLayers>1000</NLayers>
+
+    <ParticleGun>
+        <Use>true</Use>
+        <Energy>2</Energy>
+        <Species>mu-</Species>
+        <ParticlePerEvent>1</ParticlePerEvent>
+    </ParticleGun>
+
+    <GenieInput>
+        <Use>false</Use>
+        <TrackerFile>GenieTrakcerFile.txt</TrackerFile>
+    </GenieInput>
 </G4TPC>
