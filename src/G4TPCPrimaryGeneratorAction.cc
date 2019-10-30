@@ -45,13 +45,11 @@
 
 #include "G4TPCPrimaryGeneratorAction.hh"
 
-//------------------------------------------------------------------------------
-
-G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(const InputParameters *pInputParameters) :
+G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(const EventContainer *pEventContainer, const InputParameters *pInputParameters) :
     G4VUserPrimaryGeneratorAction(),
     m_pG4ParticleGun(nullptr),
     m_pInputParameters(pInputParameters),
-    m_eventCounter(0)
+    m_pEventContainer(pEventContainer)
 {
     m_pG4ParticleGun = new G4ParticleGun();
 }
@@ -68,8 +66,7 @@ G4TPCPrimaryGeneratorAction::~G4TPCPrimaryGeneratorAction()
 
 void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event *pG4Event)
 {
-    m_eventCounter++;
-    std::cout << "Event Number : " << m_eventCounter << std::endl;
+    std::cout << "Event Number : " << m_pEventContainer->GetEventNumber() << std::endl;
 
     G4LogicalVolume *worlLV = G4LogicalVolumeStore::GetInstance()->GetVolume("World");
     G4LogicalVolume *tpcLV = G4LogicalVolumeStore::GetInstance()->GetVolume("Calorimeter");
@@ -126,7 +123,7 @@ void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event *pG4Event)
 
 void G4TPCPrimaryGeneratorAction::LoadNextGenieEvent(G4Event *pG4Event)
 {
-    const GenieEvent genieEvent(m_pInputParameters->GetGenieEvents().at(m_eventCounter - 1));
+    const GenieEvent genieEvent(m_pInputParameters->GetGenieEvents().at(m_pEventContainer->GetEventNumber()));
 
     m_pG4ParticleGun->SetParticlePosition(G4ThreeVector(genieEvent.GetVertexX(), genieEvent.GetVertexY(), genieEvent.GetVertexZ()));
     m_pG4ParticleGun->SetParticleTime(0.f);
@@ -134,8 +131,8 @@ void G4TPCPrimaryGeneratorAction::LoadNextGenieEvent(G4Event *pG4Event)
     for (const GenieEvent::Track *pTrack : genieEvent.GetDaughterTracks())
     {
         m_pG4ParticleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle((pTrack->GetPDG())));
-        double kineticEnergy(pTrack->GetEnergy() - m_pG4ParticleGun->GetParticleDefinition()->GetPDGMass());
-        m_pG4ParticleGun->SetParticleEnergy(kineticEnergy);
+        double kineticEnergy(pTrack->GetEnergy() - m_pG4ParticleGun->GetParticleDefinition()->GetPDGMass() / GeV);
+        m_pG4ParticleGun->SetParticleEnergy(kineticEnergy * GeV);
         m_pG4ParticleGun->SetParticleMomentumDirection(G4ThreeVector(pTrack->GetDirectionX(), pTrack->GetDirectionY(), pTrack->GetDirectionZ()));
         m_pG4ParticleGun->GeneratePrimaryVertex(pG4Event);
     }

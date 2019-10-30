@@ -59,7 +59,7 @@ void G4TPCActionInitialization::Build() const
     // Set user defined actions
     EventContainer *pEventContainer = new EventContainer(m_pInputParameters);
     G4TPCMCParticleUserAction *pG4TPCMCParticleUserAction = new G4TPCMCParticleUserAction(pEventContainer, m_pInputParameters);
-    SetUserAction(new G4TPCPrimaryGeneratorAction(m_pInputParameters));
+    SetUserAction(new G4TPCPrimaryGeneratorAction(pEventContainer, m_pInputParameters));
     SetUserAction(new G4TPCRunAction(pEventContainer, pG4TPCMCParticleUserAction));
     SetUserAction(new G4TPCEventAction(pEventContainer, pG4TPCMCParticleUserAction));
     G4UserTrackingAction *trackingAction = (G4UserTrackingAction*) pG4TPCMCParticleUserAction;
