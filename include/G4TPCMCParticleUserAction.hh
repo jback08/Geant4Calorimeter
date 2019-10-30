@@ -116,10 +116,9 @@ private:
     double                 m_energyCut;              ///< Energy threshold for tracking particles
     MCParticleInfo         m_currentMCParticleInfo;  ///< Active MC particle information
     MCParticleList         m_mcParticleList;         ///< List of MC particles in the event
-    IntIntMap              m_parentIdMap;            ///< Map of MC particle track id to parent MCParticle id
+    IntIntMap              m_trackIdParentMap;       ///< Map of MC particle track id to parent MCParticle id
     int                    m_currentPdgCode;         ///< PDG code of active MC particle
     int                    m_currentTrackId;         ///< Current track id of active MC particle
-    int                    m_trackIdOffset;          ///< Track id offset
 };
 
 #endif // #ifndef GEANT4_MCPARTICLE_USER_ACTION_H

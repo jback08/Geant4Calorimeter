@@ -78,9 +78,9 @@ void EventContainer::SaveXml()
             int mainVisibleMCTrackId(mainMCTrackId);
             while (!mcParticleList.KnownParticle(mainVisibleMCTrackId))
             {
-                if (mcParticleList.m_parentIdMap.find(mainVisibleMCTrackId) != mcParticleList.m_parentIdMap.end())
+                if (mcParticleList.m_trackIdParentMap.find(mainVisibleMCTrackId) != mcParticleList.m_trackIdParentMap.end())
                 {
-                    mainVisibleMCTrackId = mcParticleList.m_parentIdMap.at(mainVisibleMCTrackId);
+                    mainVisibleMCTrackId = mcParticleList.m_trackIdParentMap.at(mainVisibleMCTrackId);
                 }
                 else
                 {
