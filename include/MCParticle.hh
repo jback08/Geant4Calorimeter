@@ -764,7 +764,7 @@ class MCParticleList
 {
 public:
     /**
-     *  Constructor
+     *  @brief  Constructor
      */
     MCParticleList();
 
@@ -772,9 +772,8 @@ public:
     *  @brief  Add MCParticle to list
     *
     *  @param  pMCParticle to add
-    *  @param  geantTrackId track id of particle being added
     */
-    void Add(MCParticle *pMCParticle, const int geantTrackId);
+    void Add(MCParticle *pMCParticle);
 
     /**
     *  @brief  Wipe all MCParticles from list
@@ -790,14 +789,13 @@ public:
     */
     bool KnownParticle(const int trackId) const;
 
-    IntMCParticleMap m_mcParticles;          ///< Map of Id to MCParticle (includes offset for each event)
-    IntMCParticleMap m_trackIdToMCParticles; ///< Map of geant4 trackId to MCParticle (no offset)
-    IntIntMap        m_parentIdMap;          ///< Map of geant4 trackId to parent MCParticle trackId
+    IntMCParticleMap m_mcParticles;          ///< Map of geant4 track Id to MCParticle
+    IntIntMap        m_trackIdParentMap;     ///< Map of geant4 track Id to parent MCParticle track Id
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
-inline void MCParticleList::Add(MCParticle *pMCParticle, const int geantTrackId)
+inline void MCParticleList::Add(MCParticle *pMCParticle)
 {
     const int trackId(pMCParticle->GetTrackId());
 
@@ -805,7 +803,6 @@ inline void MCParticleList::Add(MCParticle *pMCParticle, const int geantTrackId)
         return;
 
     m_mcParticles.insert(IntMCParticleMap::value_type(trackId, pMCParticle));
-    m_trackIdToMCParticles.insert(IntMCParticleMap::value_type(geantTrackId, pMCParticle));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 

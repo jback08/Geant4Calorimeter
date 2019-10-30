@@ -18,8 +18,7 @@ G4TPCMCParticleUserAction::G4TPCMCParticleUserAction(EventContainer *pEventConta
     m_keepEMShowerDaughters(pInputParameters->GetKeepEMShowerDaughters()),
     m_energyCut(pInputParameters->GetHitEnergyThreshold() * CLHEP::GeV),
     m_currentPdgCode(0),
-    m_currentTrackId(std::numeric_limits<int>::max()),
-    m_trackIdOffset(0)
+    m_currentTrackId(std::numeric_limits<int>::max())
 {
 }
 
@@ -48,7 +47,7 @@ void G4TPCMCParticleUserAction::BeginOfEventAction(const G4Event * /*pG4Event*/)
     m_currentMCParticleInfo.Clear();
     m_mcParticleList.Clear();
     m_currentTrackId = std::numeric_limits<int>::max();
-    m_parentIdMap.clear();
+    m_trackIdParentMap.clear();
     m_currentPdgCode = 0;
 
     if (m_pInputParameters->GetUseGenieInput())
@@ -68,7 +67,7 @@ void G4TPCMCParticleUserAction::BeginOfEventAction(const G4Event * /*pG4Event*/)
         const TLorentzVector momentumTLV(direction.Unit() * energy, energy);
 
         pMCParticle->AddTrajectoryPoint(vtxTLV, momentumTLV);
-        m_mcParticleList.Add(pMCParticle, -1);
+        m_mcParticleList.Add(pMCParticle);
     }
 }
 
@@ -94,7 +93,7 @@ void G4TPCMCParticleUserAction::EndOfEventAction(const G4Event * /*pG4Event*/)
         }
     }
 
-    m_mcParticleList.m_parentIdMap = m_parentIdMap;
+    m_mcParticleList.m_trackIdParentMap = m_trackIdParentMap;
     m_pEventContainer->SetCurrentMCParticleList(m_mcParticleList);
 }
 
@@ -104,12 +103,12 @@ int G4TPCMCParticleUserAction::GetParent(const int trackId) const
 {
     int parentId(std::numeric_limits<int>::max());
 
-    IntIntMap::const_iterator iter = m_parentIdMap.find(trackId);
+    IntIntMap::const_iterator iter = m_trackIdParentMap.find(trackId);
 
-    while (iter != m_parentIdMap.end())
+    while (iter != m_trackIdParentMap.end())
     {
         parentId = (*iter).second;
-        iter = m_parentIdMap.find(parentId);
+        iter = m_trackIdParentMap.find(parentId);
     }
 
      return parentId;
@@ -127,9 +126,9 @@ bool G4TPCMCParticleUserAction::KnownParticle(const int trackId) const
 void G4TPCMCParticleUserAction::PreUserTrackingAction(const G4Track *pG4Track)
 {
     G4ParticleDefinition *pG4ParticleDefinition = pG4Track->GetDefinition();
-    int pdgCode(pG4ParticleDefinition->GetPDGEncoding());
-    int trackID(pG4Track->GetTrackID() + m_trackIdOffset);
-    int parentTrackId(pG4Track->GetParentID() + m_trackIdOffset);
+    const int pdgCode(pG4ParticleDefinition->GetPDGEncoding());
+    const int trackID(pG4Track->GetTrackID());
+    int parentTrackId(pG4Track->GetParentID());
 
     m_currentPdgCode = pdgCode;
 
@@ -160,7 +159,7 @@ void G4TPCMCParticleUserAction::PreUserTrackingAction(const G4Track *pG4Track)
                 || processName.find("annihil")         != std::string::npos))
         {
             m_currentMCParticleInfo.Clear();
-            m_parentIdMap[trackID] = parentTrackId;
+            m_trackIdParentMap[trackID] = parentTrackId;
             return;
         }
 
@@ -169,13 +168,13 @@ void G4TPCMCParticleUserAction::PreUserTrackingAction(const G4Track *pG4Track)
         if (energy < m_energyCut)
         {
             m_currentMCParticleInfo.Clear();
-            m_parentIdMap[trackID] = parentTrackId;
+            m_trackIdParentMap[trackID] = parentTrackId;
         }
 
         if (!this->KnownParticle(parentTrackId))
         {
-            m_parentIdMap[trackID] = parentTrackId;
-            int pid(this->GetParent(parentTrackId));
+            m_trackIdParentMap[trackID] = parentTrackId;
+            const int pid(this->GetParent(parentTrackId));
 
             if (!this->KnownParticle(pid))
             {
@@ -188,13 +187,13 @@ void G4TPCMCParticleUserAction::PreUserTrackingAction(const G4Track *pG4Track)
         }
     }
 
-    double mass(pG4DynamicParticle->GetMass()/CLHEP::GeV);
+    double mass(pG4DynamicParticle->GetMass() / CLHEP::GeV);
     m_currentMCParticleInfo.Clear();
     m_currentMCParticleInfo.m_pMCParticle = new MCParticle(trackID, pdgCode, parentTrackId, mass);
     m_currentMCParticleInfo.m_generatedParticleIndex = 0;
     m_currentMCParticleInfo.m_keep = true;
 
-    m_mcParticleList.Add(m_currentMCParticleInfo.m_pMCParticle, pG4Track->GetTrackID());
+    m_mcParticleList.Add(m_currentMCParticleInfo.m_pMCParticle);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
