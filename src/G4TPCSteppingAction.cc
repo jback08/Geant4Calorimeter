@@ -29,8 +29,9 @@
 /// \brief Implementation of the G4TPCSteppingAction class
 
 #include "G4TPCSteppingAction.hh"
-#include "EventContainer.hh"
 #include "G4TPCDetectorConstruction.hh"
+
+#include "Persistency/EventContainer.hh"
 
 #include "G4Step.hh"
 #include "G4SystemOfUnits.hh"

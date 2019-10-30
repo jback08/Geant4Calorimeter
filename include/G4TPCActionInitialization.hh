@@ -32,7 +32,7 @@
 #define G4TPCActionInitialization_h 1
 
 #include "G4VUserActionInitialization.hh"
-#include "InputParameters.hh"
+#include "ControlFlow/InputParameters.hh"
 
 class G4TPCDetectorConstruction;
 

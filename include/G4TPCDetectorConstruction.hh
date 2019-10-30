@@ -32,7 +32,7 @@
 #define G4TPCDetectorConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
-#include "Cell.hh"
+#include "Objects/Cell.hh"
 
 #include "globals.hh"
 #include <math.h>

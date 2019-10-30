@@ -34,8 +34,8 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "globals.hh"
 
-#include "EventContainer.hh"
-#include "InputParameters.hh"
+#include "ControlFlow/InputParameters.hh"
+#include "Persistency/EventContainer.hh"
 
 class G4Event;
 class G4ParticleGun;

@@ -13,13 +13,14 @@
 
 #include "globals.hh"
 
-#include "EventContainer.hh"
 #include "G4UserEventAction.hh"
 #include "G4UserRunAction.hh"
 #include "G4UserSteppingAction.hh"
 #include "G4UserTrackingAction.hh"
 
-#include "MCParticle.hh"
+#include "Objects/MCParticle.hh"
+
+#include "Persistency/EventContainer.hh"
 
 /**
  *  @brief G4TPCMCParticleUserAction class
