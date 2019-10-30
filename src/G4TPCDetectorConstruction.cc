@@ -28,33 +28,27 @@
 /// \file G4TPCDetectorConstruction.cc
 /// \brief Implementation of the G4TPCDetectorConstruction class
 
-#include "G4TPCDetectorConstruction.hh"
-
 #include "G4Material.hh"
 #include "G4NistManager.hh"
-
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4PVReplica.hh"
 #include "G4AutoDelete.hh"
-
 #include "G4GeometryManager.hh"
 #include "G4PhysicalVolumeStore.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
-
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
-
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
-
 #include "G4UserLimits.hh"
-
 #include "G4Step.hh"
 
-#include "InputParameters.hh"
+#include "G4TPCDetectorConstruction.hh"
+
+#include "ControlFlow/InputParameters.hh"
 
 //------------------------------------------------------------------------------
 

@@ -11,9 +11,10 @@
 
 #include <iostream>
 
-#include "Cell.hh"
-#include "InputParameters.hh"
-#include "MCParticle.hh"
+#include "ControlFlow/InputParameters.hh"
+
+#include "Objects/Cell.hh"
+#include "Objects/MCParticle.hh"
 
 /**
  *  @brief EventContainer class

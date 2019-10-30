@@ -8,7 +8,7 @@
 
 #include <iterator>
 
-#include "MCParticle.hh"
+#include "Objects/MCParticle.hh"
 
 MCParticle::MCParticle() :
     m_status(std::numeric_limits<int>::max()),

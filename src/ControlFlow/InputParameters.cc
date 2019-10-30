@@ -10,7 +10,7 @@
 #include "G4SystemOfUnits.hh"
 
 #include "Xml/tinyxml.hh"
-#include "InputParameters.hh"
+#include "ControlFlow/InputParameters.hh"
 
 InputParameters::InputParameters() :
     m_useParticleGun(false),

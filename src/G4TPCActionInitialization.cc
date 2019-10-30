@@ -28,7 +28,7 @@
 /// \file G4TPCActionInitialization.cc
 /// \brief Implementation of the G4TPCActionInitialization class
 
-#include "EventContainer.hh"
+#include "Persistency/EventContainer.hh"
 #include "G4TPCMCParticleUserAction.hh"
 #include "G4TPCActionInitialization.hh"
 #include "G4TPCPrimaryGeneratorAction.hh"

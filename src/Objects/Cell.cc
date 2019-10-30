@@ -8,7 +8,7 @@
 
 #include <algorithm>
 
-#include "Cell.hh"
+#include "Objects/Cell.hh"
 
 Cell::Cell(const float x, const float y, const float z, const int idx) :
     m_idx(idx),

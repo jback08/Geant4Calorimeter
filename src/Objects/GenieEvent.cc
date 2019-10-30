@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 
-#include "GenieEvent.hh"
+#include "Objects/GenieEvent.hh"
 
 GenieEvent::GenieEvent() :
     m_pNeutrinoTrack(nullptr),

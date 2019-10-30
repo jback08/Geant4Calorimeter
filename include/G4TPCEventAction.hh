@@ -31,7 +31,7 @@
 #ifndef G4TPCEventAction_h
 #define G4TPCEventAction_h 1
 
-#include "EventContainer.hh"
+#include "Persistency/EventContainer.hh"
 #include "G4TPCMCParticleUserAction.hh"
 #include "G4UserEventAction.hh"
 

@@ -30,7 +30,7 @@
 
 #include "G4TPCDetectorConstruction.hh"
 #include "G4TPCActionInitialization.hh"
-#include "InputParameters.hh"
+#include "ControlFlow/InputParameters.hh"
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
