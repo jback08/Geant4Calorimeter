@@ -75,13 +75,6 @@ public:
     double GetParticleGunEnergy() const;
 
     /**
-     *  @brief  Get number of event to simulate
-     *
-     *  @return m_nEvents
-     */
-    int GetParticleGunNEvents() const;
-
-    /**
      *  @brief  Get number of particles to simulate (via particle gun) per event
      *
      *  @return m_nParticlesPerEvent
@@ -179,6 +172,13 @@ public:
      */
     GenieEvents GetGenieEvents() const;
 
+    /**
+     *  @brief  Get maximum number of events to process
+     *
+     *  @return m_maxNEventsToProcess
+     */
+    int GetMaxNEventsToProcess() const;
+
 private:
     /**
      *  @brief  Load input parameters via xml
@@ -205,7 +205,6 @@ private:
     // Particle gun setup
     bool                 m_useParticleGun;        ///< Should generate events using G4 particle gun
     std::string          m_species;               ///< Particle type to simulate if using particle gun
-    int                  m_nEvents;               ///< Number of events to simulate
     double               m_energy;                ///< Energy (total) of particles to simulate
     int                  m_nParticlesPerEvent;    ///< Number of particles per event
 
@@ -227,6 +226,7 @@ private:
     double               m_yWidth;                ///< Detector width along y (mm)
     double               m_zWidth;                ///< Detector width along z (mm)
     int                  m_nLayers;               ///< Number of layers for defining 3D hit binning
+    int                  m_maxNEventsToProcess;   ///< Maximum number of events to process
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -255,13 +255,6 @@ inline std::string InputParameters::GetOutputXmlFileName() const
 inline double InputParameters::GetParticleGunEnergy() const
 {
     return m_energy;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------ 
-
-inline int InputParameters::GetParticleGunNEvents() const
-{
-    return m_nEvents;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -362,5 +355,11 @@ inline GenieEvents InputParameters::GetGenieEvents() const
     return m_genieEvents;
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline int InputParameters::GetMaxNEventsToProcess() const
+{
+    return m_maxNEventsToProcess;
+}
 
 #endif // #ifndef INPUT_PARAMETERS_H

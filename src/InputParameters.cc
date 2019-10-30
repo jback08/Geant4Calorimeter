@@ -14,7 +14,6 @@
 
 InputParameters::InputParameters() :
     m_useParticleGun(false),
-    m_nEvents(0),
     m_energy(-1.),
     m_nParticlesPerEvent(1),
     m_useGenieInput(false),
@@ -26,7 +25,8 @@ InputParameters::InputParameters() :
     m_xWidth(1000*mm),
     m_yWidth(1000*mm),
     m_zWidth(1000*mm),
-    m_nLayers(1000)
+    m_nLayers(1000),
+    m_maxNEventsToProcess(std::numeric_limits<int>::max())
 {
 }
 
@@ -70,7 +70,7 @@ bool InputParameters::Valid() const
             return false;
         }
 
-        if (m_nEvents <= 0 || m_nParticlesPerEvent <= 0)
+        if (m_maxNEventsToProcess <= 0 || m_nParticlesPerEvent <= 0)
         {
             std::cout << "Must specify positive number of events and particles per event to simulate" << std::endl;
             return false;
@@ -181,10 +181,6 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
                 {
                     m_energy = std::stod(pParticleGunTiXmlElement->GetText());
                 }
-                else if (pParticleGunTiXmlElement->ValueStr() == "NEvents")
-                {
-                    m_nEvents = std::stoi(pParticleGunTiXmlElement->GetText());
-                }
                 else if (pParticleGunTiXmlElement->ValueStr() == "ParticlePerEvent")
                 {
                     m_nParticlesPerEvent = std::stoi(pParticleGunTiXmlElement->GetText());
@@ -241,6 +237,10 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
         else if (pHeadTiXmlElement->ValueStr() == "NLayers")
         {
             m_nLayers = std::stoi(pHeadTiXmlElement->GetText());
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "MaxNEventsToProcess")
+        {
+            m_maxNEventsToProcess = std::stoi(pHeadTiXmlElement->GetText());
         }
     }
     return;
