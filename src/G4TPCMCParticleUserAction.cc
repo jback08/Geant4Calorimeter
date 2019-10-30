@@ -60,11 +60,11 @@ void G4TPCMCParticleUserAction::BeginOfEventAction(const G4Event * /*pG4Event*/)
         //        particle gun will appear as daughters.
         MCParticle *pMCParticle = new MCParticle(0, pdg, -1, mass);
 
-        const TLorentzVector vtxTLV(genieEvent.GetVertexX(), genieEvent.GetVertexY(), genieEvent.GetVertexZ(), 0.f);
+        const G4LorentzVector vtxTLV(genieEvent.GetVertexX(), genieEvent.GetVertexY(), genieEvent.GetVertexZ(), 0.f);
         const double energy(genieEvent.GetNeutrinoTrack()->GetEnergy());
-        const TVector3 direction(genieEvent.GetNeutrinoTrack()->GetDirectionX(), genieEvent.GetNeutrinoTrack()->GetDirectionY(), genieEvent.GetNeutrinoTrack()->GetDirectionZ());
+        const CLHEP::Hep3Vector direction(genieEvent.GetNeutrinoTrack()->GetDirectionX(), genieEvent.GetNeutrinoTrack()->GetDirectionY(), genieEvent.GetNeutrinoTrack()->GetDirectionZ());
         // ATTN : Assume zero neutrino mass
-        const TLorentzVector momentumTLV(direction.Unit() * energy, energy);
+        const G4LorentzVector momentumTLV(direction.unit() * energy, energy);
 
         pMCParticle->AddTrajectoryPoint(vtxTLV, momentumTLV);
         m_mcParticleList.Add(pMCParticle);
@@ -213,11 +213,11 @@ void G4TPCMCParticleUserAction::UserSteppingAction(const G4Step *pG4Step)
 
     const G4ThreeVector position(pPreStepPoint->GetPosition());
     const double time(pPreStepPoint->GetGlobalTime());
-    const TLorentzVector fourPos(position.x() / CLHEP::mm, position.y() / CLHEP::mm, position.z() / CLHEP::mm, time / CLHEP::ns);
+    const G4LorentzVector fourPos(position.x() / CLHEP::mm, position.y() / CLHEP::mm, position.z() / CLHEP::mm, time / CLHEP::ns);
 
     const G4ThreeVector momentum(pPreStepPoint->GetMomentum());
     const double energy(pPreStepPoint->GetTotalEnergy());
-    const TLorentzVector fourMom(momentum.x() / CLHEP::GeV, momentum.y() / CLHEP::GeV, momentum.z() / CLHEP::GeV, energy / CLHEP::GeV);
+    const G4LorentzVector fourMom(momentum.x() / CLHEP::GeV, momentum.y() / CLHEP::GeV, momentum.z() / CLHEP::GeV, energy / CLHEP::GeV);
 
     m_currentMCParticleInfo.m_pMCParticle->AddTrajectoryPoint(fourPos, fourMom);
 }
