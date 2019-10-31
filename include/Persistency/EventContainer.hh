@@ -1,5 +1,5 @@
 /**
- *  @file   include/EventContainer.cc
+ *  @file   include/EventContainer.hh
  *
  *  @brief  Header file for the EventContainer class.
  *
@@ -23,7 +23,7 @@ class EventContainer
 {
 public:
     /**
-     *  @brief  Default constructor
+     *  @brief  Constructor
      *
      *  @param  pInputParameters input parameters
      */

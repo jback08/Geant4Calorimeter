@@ -16,6 +16,8 @@
 
 typedef std::vector<GenieEvent> GenieEvents;
 
+class TiXmlElement;
+
 /**
  *  @brief InputParameters class
  */
@@ -179,6 +181,76 @@ public:
      */
     int GetMaxNEventsToProcess() const;
 
+    /**
+     *  @brief  Get should write LArTPC 2D hits
+     *
+     *  @return m_shouldWriteLArTPCHits;
+     */
+    bool GetShouldWriteLArTPCHits() const;
+
+    /**
+     *  @brief  Get dual phase mode
+     *
+     *  @return m_dualPhaseMode
+     */
+    bool GetDualPhaseMode() const;
+
+    /**
+     *  @brief  Get wire angle for the U view
+     *
+     *  @return m_wireAngleU
+     */
+    double GetWireAngleU() const;
+
+    /**
+     *  @brief  Get wire angle for the V view
+     *
+     *  @return m_wireAngleV
+     */
+    double GetWireAngleV() const;
+
+    /**
+     *  @brief  Get wire angle for the W view
+     *
+     *  @return m_wireAngleW
+     */
+    double GetWireAngleW() const;
+
+    /**
+     *  @brief  Get the wire pitch for the U view
+     *
+     *  @return m_wirePitchU
+     */
+    double GetWirePitchU() const;
+
+    /**
+     *  @brief  Get the wire pitch for the V view
+     *
+     *  @return m_wirePitchV
+     */
+    double GetWirePitchV() const;
+
+    /**
+     *  @brief  Get the wire pitch for the W view
+     *
+     *  @return m_wirePitchW
+     */
+    double GetWirePitchW() const;
+
+    /**
+     *  @brief  Get the hit width in the drift time direction
+     *
+     *  @return m_driftTimeWidth
+     */
+    double GetDriftTimeWidth() const;
+
+    /**
+     *  @brief  Get the LArTPC 2D hit energy threshold
+     *
+     *  @return m_larTPCHitEnergyThreshold
+     */
+    double GetLArTPCHitEnergyThreshold() const;
+
 private:
     /**
      *  @brief  Load input parameters via xml
@@ -186,6 +258,13 @@ private:
      *  @param  inputXmlFileName
      */
     void LoadViaXml(const std::string &inputXmlFileName);
+
+    /**
+     *  @brief  Parse tiny xml element containing a bool
+     *
+     *  @param  pHeadTiXmlElement element to parse
+     */
+    bool ParseBoolArgument(TiXmlElement *pHeadTiXmlElement);
 
     /**
      *  @brief  Load events from genie tracker file
@@ -203,30 +282,42 @@ private:
     static StringVector TokeniseLine(const std::string &line, const std::string &sep);
 
     // Particle gun setup
-    bool                 m_useParticleGun;        ///< Should generate events using G4 particle gun
-    std::string          m_species;               ///< Particle type to simulate if using particle gun
-    double               m_energy;                ///< Energy (total) of particles to simulate
-    int                  m_nParticlesPerEvent;    ///< Number of particles per event
+    bool                 m_useParticleGun;             ///< Should generate events using G4 particle gun
+    std::string          m_species;                    ///< Particle type to simulate if using particle gun
+    double               m_energy;                     ///< Energy (total) of particles to simulate
+    int                  m_nParticlesPerEvent;         ///< Number of particles per event
 
     // Genie input
-    bool                 m_useGenieInput;         ///< Should use genie input
-    std::string          m_genieTrackerFile;      ///< Genie tracker file
-    GenieEvents          m_genieEvents;           ///< Genie events
+    bool                 m_useGenieInput;              ///< Should use genie input
+    std::string          m_genieTrackerFile;           ///< Genie tracker file
+    GenieEvents          m_genieEvents;                ///< Genie events
 
     // Geant4 parameters
-    std::string          m_outputFileName;        ///< Output file (xml) to write to
-    bool                 m_keepEMShowerDaughters; ///< Should keep/discard em shower daughter mc particles
-    double               m_energyCut;             ///< Energy threshold for tracking
+    std::string          m_outputFileName;             ///< Output file (xml) to write to
+    bool                 m_keepEMShowerDaughters;      ///< Should keep/discard em shower daughter mc particles
+    double               m_energyCut;                  ///< Energy threshold for tracking
 
     // Detector properties
-    double               m_xCenter;               ///< X center of detector (mm)
-    double               m_yCenter;               ///< Y center of detector (mm)
-    double               m_zCenter;               ///< Z center of detector (mm)
-    double               m_xWidth;                ///< Detector width along x (mm)
-    double               m_yWidth;                ///< Detector width along y (mm)
-    double               m_zWidth;                ///< Detector width along z (mm)
-    int                  m_nLayers;               ///< Number of layers for defining 3D hit binning
-    int                  m_maxNEventsToProcess;   ///< Maximum number of events to process
+    double               m_xCenter;                    ///< X center of detector (mm)
+    double               m_yCenter;                    ///< Y center of detector (mm)
+    double               m_zCenter;                    ///< Z center of detector (mm)
+    double               m_xWidth;                     ///< Detector width along x (mm)
+    double               m_yWidth;                     ///< Detector width along y (mm)
+    double               m_zWidth;                     ///< Detector width along z (mm)
+    int                  m_nLayers;                    ///< Number of layers for defining 3D hit binning
+    int                  m_maxNEventsToProcess;        ///< Maximum number of events to process
+
+    // Writing out images
+    bool                 m_shouldWriteLArTPCHits;      ///< Whether to write out the LArTPC model hits
+    bool                 m_dualPhaseMode;              ///< Whether to write out the U/W or the U/V/W views
+    double               m_wireAngleU;                 ///< Wire angle (to vertical y) for U view
+    double               m_wireAngleV;                 ///< Wire angle (to vertical y) for V view
+    double               m_wireAngleW;                 ///< Wire angle (to vertical y) for W view
+    double               m_wirePitchU;                 ///< Wire pitch for U view
+    double               m_wirePitchV;                 ///< Wire pitch for V view
+    double               m_wirePitchW;                 ///< Wire pitch for W view
+    double               m_driftTimeWidth;             ///< Width of hit in drift time
+    double               m_larTPCHitEnergyThreshold;   ///< Threshold to apply to the spoof LArTPC model (2D) hits
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -360,6 +451,76 @@ inline GenieEvents InputParameters::GetGenieEvents() const
 inline int InputParameters::GetMaxNEventsToProcess() const
 {
     return m_maxNEventsToProcess;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline bool InputParameters::GetShouldWriteLArTPCHits() const
+{
+    return m_shouldWriteLArTPCHits;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline bool InputParameters::GetDualPhaseMode() const
+{
+    return m_dualPhaseMode;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWireAngleU() const
+{
+    return m_wireAngleU;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWireAngleV() const
+{
+    return m_wireAngleV;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWireAngleW() const
+{
+    return m_wireAngleW;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWirePitchU() const
+{
+    return m_wirePitchU;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWirePitchV() const
+{
+    return m_wirePitchV;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetWirePitchW() const
+{
+    return m_wirePitchW;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetDriftTimeWidth() const
+{
+    return m_driftTimeWidth;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetLArTPCHitEnergyThreshold() const
+{
+    return m_larTPCHitEnergyThreshold;
 }
 
 #endif // #ifndef INPUT_PARAMETERS_H

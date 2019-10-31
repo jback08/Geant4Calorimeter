@@ -26,8 +26,19 @@ InputParameters::InputParameters() :
     m_yWidth(1000*mm),
     m_zWidth(1000*mm),
     m_nLayers(1000),
-    m_maxNEventsToProcess(std::numeric_limits<int>::max())
+    m_maxNEventsToProcess(std::numeric_limits<int>::max()),
+    m_shouldWriteLArTPCHits(false),
+    m_dualPhaseMode(false),
+    m_wireAngleU(0.623257100582),
+    m_wireAngleV(-0.623257100582),
+    m_wireAngleW(0.0),
+    m_wirePitchU(4.6669998765),
+    m_wirePitchV(4.6669998765),
+    m_wirePitchW(4.79000002146),
+    m_driftTimeWidth(5.0),
+    m_larTPCHitEnergyThreshold(0.0)
 {
+    // ATTN : For LArTPC model writing the default parameters are taken from the DUNEFD detector
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -145,16 +156,7 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
         }
         else if (pHeadTiXmlElement->ValueStr() == "KeepMCEmShowerDaughters")
         {
-            std::string keepEMShowerDaughtersString(pHeadTiXmlElement->GetText());
-            std::transform(keepEMShowerDaughtersString.begin(), keepEMShowerDaughtersString.end(), keepEMShowerDaughtersString.begin(), [](unsigned char c){ return std::tolower(c);});
-            if ((keepEMShowerDaughtersString == "0") || (keepEMShowerDaughtersString == "false"))
-            {
-                m_keepEMShowerDaughters = false;
-            }
-            else
-            {
-                m_keepEMShowerDaughters = true;
-            }
+            m_keepEMShowerDaughters = this->ParseBoolArgument(pHeadTiXmlElement);
         }
         else if (pHeadTiXmlElement->ValueStr() == "ParticleGun")
         {
@@ -162,16 +164,7 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
             {
                 if (pParticleGunTiXmlElement->ValueStr() == "Use")
                 {
-                    std::string useParticleGunString(pParticleGunTiXmlElement->GetText());
-                    std::transform(useParticleGunString.begin(), useParticleGunString.end(), useParticleGunString.begin(), [](unsigned char c){ return std::tolower(c);});
-                    if ((useParticleGunString == "0") || (useParticleGunString == "false"))
-                    {
-                        m_useParticleGun = false;
-                    }
-                    else
-                    {
-                        m_useParticleGun = true;
-                    }
+                    m_useParticleGun = this->ParseBoolArgument(pParticleGunTiXmlElement);
                 }
                 else if (pParticleGunTiXmlElement->ValueStr() == "Species")
                 {
@@ -193,16 +186,7 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
             {
                 if (pGenieTiXmlElement->ValueStr() == "Use")
                 {
-                    std::string useGenieString(pGenieTiXmlElement->GetText());
-                    std::transform(useGenieString.begin(), useGenieString.end(), useGenieString.begin(), [](unsigned char c){ return std::tolower(c);});
-                    if ((useGenieString == "0") || (useGenieString == "false"))
-                    {
-                        m_useGenieInput = false;
-                    }
-                    else
-                    {
-                        m_useGenieInput = true;
-                    }
+                    m_useGenieInput = this->ParseBoolArgument(pGenieTiXmlElement);
                 }
                 else if (pGenieTiXmlElement->ValueStr() == "TrackerFile")
                 {
@@ -242,8 +226,67 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
         {
             m_maxNEventsToProcess = std::stoi(pHeadTiXmlElement->GetText());
         }
+        else if (pHeadTiXmlElement->ValueStr() == "LArTPCModel")
+        {
+            for (TiXmlElement *pLArTPCTiXmlElement = pHeadTiXmlElement->FirstChildElement(); pLArTPCTiXmlElement != nullptr; pLArTPCTiXmlElement = pLArTPCTiXmlElement->NextSiblingElement())
+            {
+                if (pLArTPCTiXmlElement->ValueStr() == "ShouldWriteLArTPCHits")
+                {
+                    m_shouldWriteLArTPCHits = this->ParseBoolArgument(pLArTPCTiXmlElement);
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "DualPhaseMode")
+                {
+                    m_dualPhaseMode = this->ParseBoolArgument(pLArTPCTiXmlElement);
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "WireAngleU")
+                {
+                    m_wireAngleU = std::stod(pLArTPCTiXmlElement->GetText());
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "WireAngleV")
+                {
+                    m_wireAngleV = std::stod(pLArTPCTiXmlElement->GetText());
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "WireAngleW")
+                {
+                    m_wireAngleW = std::stod(pLArTPCTiXmlElement->GetText());
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "WirePitchU")
+                {
+                    m_wirePitchU = std::stod(pLArTPCTiXmlElement->GetText());
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "WirePitchV")
+                {
+                    m_wirePitchV = std::stod(pLArTPCTiXmlElement->GetText());
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "WirePitchW")
+                {
+                    m_wirePitchW = std::stod(pLArTPCTiXmlElement->GetText());
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "DriftTimeWidth")
+                {
+                    m_driftTimeWidth = std::stod(pLArTPCTiXmlElement->GetText());
+                }
+                else if (pLArTPCTiXmlElement->ValueStr() == "LArTPCHitEnergyThreshold")
+                {
+                    m_larTPCHitEnergyThreshold = std::stod(pLArTPCTiXmlElement->GetText());
+                }
+            }
+        }
     }
     return;
+}
+
+//------------------------------------------------------------------------------
+
+bool InputParameters::ParseBoolArgument(TiXmlElement *pHeadTiXmlElement)
+{
+    std::string inputString(pHeadTiXmlElement->GetText());
+    std::transform(inputString.begin(), inputString.end(), inputString.begin(), [](unsigned char c){ return std::tolower(c); });
+
+    if (inputString == "0" || inputString == "false")
+        return false;
+
+    return true;
 }
 
 //------------------------------------------------------------------------------
