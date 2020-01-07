@@ -96,6 +96,13 @@ public:
     double GetHitEnergyThreshold() const;
 
     /**
+     *  @brief  Get hit energy threshold
+     *
+     *  @return m_cellThreshold
+     */
+    double GetCellEnergyThreshold() const;
+
+    /**
      *  @brief  Whether to use genie input
      *
      *  @return m_useGenieInput
@@ -217,6 +224,7 @@ private:
     std::string          m_outputFileName;        ///< Output file (xml) to write to
     bool                 m_keepEMShowerDaughters; ///< Should keep/discard em shower daughter mc particles
     double               m_energyCut;             ///< Energy threshold for tracking
+    double               m_cellThreshold;         ///< Energy threshold for saving cells
 
     // Detector properties
     double               m_xCenter;               ///< X center of detector (mm)
@@ -277,6 +285,15 @@ inline double InputParameters::GetHitEnergyThreshold() const
 {
     return m_energyCut;
 }
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline double InputParameters::GetCellEnergyThreshold() const
+{
+    return m_cellThreshold;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 

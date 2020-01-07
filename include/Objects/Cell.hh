@@ -157,6 +157,11 @@ public:
      */
     void AddEnergyDeposition(Cell *pCell, const int geantTrackId);
 
+    /** 
+     *  @brief Clear up all of the cells to avoid memory leak
+     */
+    void ClearCellList();
+
     IntCellMap     m_idCellMap;     ///< Cell Id to cell map
     MCComponents   m_mcComponents;  ///< Cell Id to vector of geantIds to energies pairs
 };

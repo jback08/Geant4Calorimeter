@@ -20,6 +20,7 @@ InputParameters::InputParameters() :
     m_useGenieInput(false),
     m_keepEMShowerDaughters(false),
     m_energyCut(0.001f),
+    m_cellThreshold(0.001f),
     m_xCenter(0*mm),
     m_yCenter(0*mm),
     m_zCenter(0*mm),
@@ -143,6 +144,10 @@ void InputParameters::LoadViaXml(const std::string &inputXmlFileName)
         else if (pHeadTiXmlElement->ValueStr() == "HitThresholdEnergy")
         {
             m_energyCut = std::stod(pHeadTiXmlElement->GetText());
+        }
+        else if (pHeadTiXmlElement->ValueStr() == "CellThresholdEnergy")
+        {
+            m_cellThreshold = std::stod(pHeadTiXmlElement->GetText());
         }
         else if (pHeadTiXmlElement->ValueStr() == "KeepMCEmShowerDaughters")
         {

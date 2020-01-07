@@ -6,6 +6,8 @@
  *  $Log: $
  */
 
+#include <iostream>
+
 #include "G4Event.hh"
 #include "G4VProcess.hh"
 #include "G4Run.hh"
@@ -45,7 +47,7 @@ void G4TPCMCParticleUserAction::EndOfRunAction(const G4Run * /*pG4Run*/)
 void G4TPCMCParticleUserAction::BeginOfEventAction(const G4Event * /*pG4Event*/)
 {
     m_currentMCParticleInfo.Clear();
-    m_mcParticleList.Clear();
+    m_mcParticleList = m_pEventContainer->GetCurrentMCParticleList();
     m_currentTrackId = std::numeric_limits<int>::max();
     m_trackIdParentMap.clear();
     m_currentPdgCode = 0;

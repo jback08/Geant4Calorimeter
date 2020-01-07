@@ -810,7 +810,16 @@ inline void MCParticleList::Add(MCParticle *pMCParticle)
 
 inline void MCParticleList::Clear()
 {
+    for (auto p : m_mcParticles)
+    {
+        if (p.second != 0x0)
+        {
+            delete p.second;
+            p.second = 0x0;
+        }
+    }
     m_mcParticles.clear();
+    m_trackIdParentMap.clear();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 

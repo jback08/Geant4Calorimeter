@@ -70,3 +70,19 @@ void CellList::AddEnergyDeposition(Cell *pCell, const int geantTrackId)
     }
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+void CellList::ClearCellList()
+{
+    for (auto mapElement : m_idCellMap)
+    {
+        if( mapElement.second != 0x0)
+        {
+            delete mapElement.second;
+            mapElement.second = 0x0;
+        }
+    }
+    m_idCellMap.clear();
+    m_mcComponents.clear();
+}
+

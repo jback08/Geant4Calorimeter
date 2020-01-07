@@ -1,9 +1,10 @@
 <G4TPC>
-    <Output3DXmlFileName>Boris.xml</Output3DXmlFileName>
-    <MaxNEventsToProcess>3</MaxNEventsToProcess>
+    <Output3DXmlFileName>numuEvents.xml</Output3DXmlFileName>
+    <MaxNEventsToProcess>10</MaxNEventsToProcess>
 
     <KeepMCEmShowerDaughters>true</KeepMCEmShowerDaughters>
     <HitThresholdEnergy>0</HitThresholdEnergy>
+    <CellThresholdEnergy>0</CellThresholdEnergy>
     <CenterX>0</CenterX>
     <CenterY>0</CenterY>
     <CenterZ>0</CenterZ>

@@ -57,8 +57,8 @@ G4TPCEventAction::~G4TPCEventAction()
 
 void G4TPCEventAction::BeginOfEventAction(const G4Event *pG4Event)
 {
-    m_pG4TPCMCParticleUserAction->BeginOfEventAction(pG4Event);
     m_pEventContainer->BeginOfEventAction();
+    m_pG4TPCMCParticleUserAction->BeginOfEventAction(pG4Event);
 }
 
 //------------------------------------------------------------------------------

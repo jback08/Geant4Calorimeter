@@ -25,8 +25,8 @@ EventContainer::~EventContainer()
 
 void EventContainer::BeginOfEventAction()
 {
-    m_mcParticles = MCParticleList();
-    m_cells = CellList();
+//    m_mcParticles = MCParticleList();
+//    m_cells = CellList();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -34,6 +34,8 @@ void EventContainer::BeginOfEventAction()
 void EventContainer::EndOfEventAction()
 {
     this->SaveXml();
+    m_cells.ClearCellList();
+    m_mcParticles.Clear();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -56,6 +58,9 @@ void EventContainer::BeginOfRunAction()
     m_pTiXmlDocument = new TiXmlDocument();
     m_pTiXmlRunElement = new TiXmlElement("Run");
     m_pTiXmlDocument->LinkEndChild(m_pTiXmlRunElement);
+
+    m_mcParticles = MCParticleList();
+    m_cells = CellList();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -64,6 +69,18 @@ void EventContainer::EndOfRunAction()
 {
     m_pTiXmlDocument->SaveFile(m_pInputParameters->GetOutputXmlFileName());
     m_pTiXmlDocument->Clear();
+    // XML document
+    if(m_pTiXmlDocument != 0x0)
+    {
+      delete m_pTiXmlDocument;
+      m_pTiXmlDocument = 0x0;
+    }
+    // Element for the run
+    if(m_pTiXmlDocument != 0x0)
+    {
+      delete m_pTiXmlDocument;
+      m_pTiXmlDocument = 0x0;
+    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
@@ -87,6 +104,12 @@ void EventContainer::SaveXml()
       for (const auto iter : m_cells.m_idCellMap)
       {
           const Cell *pCell(iter.second);
+
+          // If below threshold then don't write out this cell
+          if (pCell->GetEnergy() < m_pInputParameters->GetCellEnergyThreshold())
+          {
+              continue;
+          }
 
           IntFloatVector trackIdToEnergy(m_cells.m_mcComponents.at(pCell->GetIdx()));
 
