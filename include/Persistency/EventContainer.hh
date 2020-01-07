@@ -16,6 +16,8 @@
 #include "Objects/Cell.hh"
 #include "Objects/MCParticle.hh"
 
+#include "Xml/tinyxml.hh"
+
 /**
  *  @brief EventContainer class
  */
@@ -43,6 +45,16 @@ public:
      *  @brief  Increment variables for next event
      */
     void EndOfEventAction();
+
+    /**
+     *  @brief  Create file on run start
+     */  
+    void BeginOfRunAction();
+
+    /**
+     *  @brief  Save and close file on run end
+     */  
+    void EndOfRunAction();
 
     /**
      *  @brief  Save events to xml
@@ -73,46 +85,59 @@ public:
     /**
      *  @brief  Get the event number
      *
-     *  @return m_eventNumber
+     *  @return m_currentEvent
      */
     int GetEventNumber() const;
 
-private:
-    typedef std::vector<MCParticleList> MCParticleListVector;
-    typedef std::vector<CellList> CellListVector;
+    /**
+     *  @brief  Set the event number
+     */
+    void SetEventNumber(G4int eventNumber);
 
-    int                        m_eventNumber;       ///< Event number
-    MCParticleListVector       m_mcParticles;       ///< MCParticle list
-    CellListVector             m_cells;             ///< Cell list
+private:
     const InputParameters     *m_pInputParameters;  ///< Input parameters
+
+    G4int m_currentEvent;
+    CellList m_cells;
+    MCParticleList m_mcParticles;
+
+    TiXmlDocument* m_pTiXmlDocument;
+    TiXmlElement*  m_pTiXmlRunElement;
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline CellList &EventContainer::GetCurrentCellList()
 {
-    return m_cells.at(m_eventNumber);
+    return m_cells;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline MCParticleList &EventContainer::GetCurrentMCParticleList()
 {
-    return m_mcParticles.at(m_eventNumber);
+    return m_mcParticles;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline void EventContainer::SetCurrentMCParticleList(const MCParticleList &mcParticleList)
 {
-    m_mcParticles.at(m_eventNumber) = mcParticleList;
+    m_mcParticles = mcParticleList;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------ 
 
 inline int EventContainer::GetEventNumber() const
 {
-   return m_eventNumber;
+   return m_currentEvent;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------ 
+
+inline void EventContainer::SetEventNumber(G4int eventNumber)
+{
+   m_currentEvent = eventNumber;
 }
 
 #endif // #ifndef EVENT_CONTAINER_H

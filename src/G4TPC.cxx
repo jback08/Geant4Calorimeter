@@ -106,7 +106,7 @@ int main(int argc,char** argv)
 
     pG4UImanager->ApplyCommand("/run/beamOn " + std::to_string(nEventsToProcess));
 
-    delete pG4VisManager;
+//    delete pG4VisManager;
     delete pG4RunManager;
 }
 

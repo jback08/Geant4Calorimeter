@@ -45,7 +45,7 @@
 
 #include "G4TPCPrimaryGeneratorAction.hh"
 
-G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(const EventContainer *pEventContainer, const InputParameters *pInputParameters) :
+G4TPCPrimaryGeneratorAction::G4TPCPrimaryGeneratorAction(EventContainer *pEventContainer, const InputParameters *pInputParameters) :
     G4VUserPrimaryGeneratorAction(),
     m_pG4ParticleGun(nullptr),
     m_pInputParameters(pInputParameters),
@@ -66,6 +66,7 @@ G4TPCPrimaryGeneratorAction::~G4TPCPrimaryGeneratorAction()
 
 void G4TPCPrimaryGeneratorAction::GeneratePrimaries(G4Event *pG4Event)
 {
+    m_pEventContainer->SetEventNumber(pG4Event->GetEventID());
     std::cout << "Event Number : " << m_pEventContainer->GetEventNumber() << std::endl;
 
     G4LogicalVolume *worlLV = G4LogicalVolumeStore::GetInstance()->GetVolume("World");

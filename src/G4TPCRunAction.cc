@@ -66,6 +66,8 @@ void G4TPCRunAction::BeginOfRunAction(const G4Run *pG4Run)
     G4Random::showEngineStatus();
 
     m_pG4TPCMCParticleUserAction->BeginOfRunAction(pG4Run);
+
+    m_pEventContainer->BeginOfRunAction();
 }
 
 //------------------------------------------------------------------------------
@@ -73,6 +75,6 @@ void G4TPCRunAction::BeginOfRunAction(const G4Run *pG4Run)
 void G4TPCRunAction::EndOfRunAction(const G4Run *pG4Run)
 {
     m_pG4TPCMCParticleUserAction->EndOfRunAction(pG4Run);
-    m_pEventContainer->SaveXml();
+    m_pEventContainer->EndOfRunAction();
 }
 

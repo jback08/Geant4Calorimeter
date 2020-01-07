@@ -13,14 +13,14 @@
     <NLayers>1000</NLayers>
 
     <ParticleGun>
-        <Use>true</Use>
+        <Use>false</Use>
         <Energy>2</Energy>
         <Species>mu-</Species>
         <ParticlePerEvent>1</ParticlePerEvent>
     </ParticleGun>
 
     <GenieInput>
-        <Use>false</Use>
-        <TrackerFile>GenieTrakcerFile.txt</TrackerFile>
+        <Use>true</Use>
+        <TrackerFile>/dune/data/users/lwhite86/genie/test_tracker.dat</TrackerFile>
     </GenieInput>
 </G4TPC>
