@@ -5,6 +5,7 @@
  *
  *  $Log: $
  */
+#include <algorithm>
 #include <fstream>
 
 #include "G4SystemOfUnits.hh"

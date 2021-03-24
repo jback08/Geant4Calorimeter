@@ -1,6 +1,6 @@
 <G4TPC>
-    <Output3DXmlFileName>Boris.xml</Output3DXmlFileName>
-    <MaxNEventsToProcess>3</MaxNEventsToProcess>
+    <Output3DXmlFileName>G4LArCalo_100.xml</Output3DXmlFileName>
+    <MaxNEventsToProcess>100</MaxNEventsToProcess>
 
     <KeepMCEmShowerDaughters>true</KeepMCEmShowerDaughters>
     <HitThresholdEnergy>0</HitThresholdEnergy>
@@ -21,6 +21,6 @@
 
     <GenieInput>
         <Use>false</Use>
-        <TrackerFile>GenieTrakcerFile.txt</TrackerFile>
+        <TrackerFile>GenieTrackerFile.txt</TrackerFile>
     </GenieInput>
 </G4TPC>
